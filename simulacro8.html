@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Simulacro V2 Intermedio – Subdirección de Resoluciones y Normatividad</title>
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Segoe UI',sans-serif; background:#fff0f6; color:#222; min-height:100dvh; overflow-x:hidden; }
+
+.header { background:linear-gradient(135deg,#880e4f,#e91e8c); color:white; padding:10px 14px; display:flex; align-items:center; gap:10px; box-shadow:0 2px 8px rgba(0,0,0,.2); position:sticky; top:0; z-index:200; }
+.header-logo { font-size:1.35rem; flex-shrink:0; }
+.header-text { flex:1; min-width:0; }
+.header h1 { font-size:.86rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.header p  { font-size:.6rem; opacity:.82; margin-top:1px; }
+.header-right { flex-shrink:0; text-align:right; }
+.timer { font-size:1.45rem; font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:.5px; line-height:1; }
+.t-lbl { font-size:.55rem; opacity:.65; margin-top:1px; }
+.timer.warning { color:#ffe082; }
+.timer.danger  { color:#ff6b6b; animation:pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.45} }
+.progress-wrap { background:#f8bbd0; height:3px; }
+.progress-bar  { height:3px; background:#fff; transition:width .4s; }
+
+.main { padding:12px 12px 80px; max-width:600px; margin:0 auto; }
+
+.start-screen { background:white; border-radius:14px; padding:22px 16px; box-shadow:0 2px 12px rgba(0,0,0,.08); margin-top:14px; text-align:center; }
+.start-screen h2 { font-size:1.2rem; color:#880e4f; margin-bottom:10px; line-height:1.3; }
+.info-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin:15px 0; }
+.info-card { background:#fce4ec; border-radius:10px; padding:11px 8px; }
+.info-card .num { font-size:1.5rem; font-weight:800; color:#880e4f; }
+.info-card .lbl { font-size:.72rem; color:#666; margin-top:2px; }
+.topic-section { text-align:left; margin:13px 0; }
+.topic-section-title { font-size:.71rem; font-weight:800; color:#880e4f; text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px; padding-left:8px; border-left:3px solid #e91e8c; }
+.topic-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:10px; }
+.topic-pill { background:#fce4ec; border-radius:7px; padding:6px 10px; font-size:.75rem; color:#880e4f; display:flex; justify-content:space-between; gap:6px; }
+.topic-pill .cnt { font-weight:800; flex-shrink:0; }
+.level-banner { background:linear-gradient(135deg,#4a148c,#880e4f); color:white; border-radius:10px; padding:10px 12px; margin:10px 0; font-size:.78rem; text-align:left; line-height:1.45; }
+.level-banner strong { color:#ffe082; }
+.formats-banner { background:#fff3e0; border-left:3px solid #ff9800; border-radius:8px; padding:9px 11px; margin:8px 0; font-size:.74rem; text-align:left; color:#5d4037; line-height:1.5; }
+.formats-banner strong { color:#e65100; }
+
+.question-card { background:white; border-radius:12px; padding:15px 13px; box-shadow:0 2px 10px rgba(0,0,0,.07); margin-bottom:12px; animation:fadeUp .25s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)} }
+.q-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:11px; flex-wrap:wrap; gap:5px; }
+.q-badge { font-size:.66rem; font-weight:700; padding:3px 9px; border-radius:20px; text-transform:uppercase; }
+.q-right { display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
+.q-num { color:#aaa; font-size:.75rem; }
+.q-type { font-size:.58rem; font-weight:700; padding:2px 7px; border-radius:10px; letter-spacing:.3px; }
+.q-type.seq { background:#e0f7fa; color:#006064; }
+.q-type.rel { background:#f3e5f5; color:#4a148c; }
+.q-type.cas { background:#fff3e0; color:#e65100; }
+.q-type.dir { background:#e8f5e9; color:#2e7d32; }
+
+.passage { background:#fff0f6; border-left:4px solid #e91e8c; padding:10px 12px; border-radius:0 8px 8px 0; margin-bottom:12px; font-size:.83rem; line-height:1.7; }
+.passage-label { font-size:.64rem; font-weight:700; color:#880e4f; text-transform:uppercase; margin-bottom:5px; }
+
+.question-text { font-size:.9rem; font-weight:600; line-height:1.5; margin-bottom:13px; }
+
+.listado { background:#fafafa; border:1px solid #e0e0e0; border-radius:9px; padding:11px 13px; margin-bottom:13px; font-size:.83rem; line-height:1.6; }
+.listado-title { font-size:.67rem; font-weight:700; color:#555; text-transform:uppercase; margin-bottom:7px; letter-spacing:.3px; }
+.listado ol, .listado ul { padding-left:22px; margin:0; }
+.listado li { margin-bottom:4px; }
+
+.rel-cols { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.rel-col { background:#fafafa; border:1px solid #e0e0e0; border-radius:9px; padding:9px 10px; }
+.rel-col-title { font-size:.66rem; font-weight:800; color:#880e4f; text-transform:uppercase; margin-bottom:6px; letter-spacing:.3px; }
+.rel-col ol { padding-left:18px; margin:0; font-size:.8rem; line-height:1.5; }
+.rel-col ul { padding-left:0; list-style:none; margin:0; font-size:.8rem; line-height:1.5; }
+.rel-col li { margin-bottom:5px; }
+
+.options { display:flex; flex-direction:column; gap:8px; }
+.option { display:flex; align-items:flex-start; gap:10px; padding:13px 12px; border:2px solid #e0e0e0; border-radius:10px; cursor:pointer; transition:border-color .13s,background .13s; font-size:.86rem; line-height:1.45; min-height:50px; }
+.option:active:not(.disabled) { border-color:#e91e8c; background:#fce4ec33; }
+.option.selected  { border-color:#e91e8c; background:#fce4ec55; }
+.option.correct   { border-color:#4caf50; background:#e8f5e9; }
+.option.incorrect { border-color:#f44336; background:#ffebee; }
+.option.disabled  { cursor:default; }
+.option-letter { width:26px; height:26px; border-radius:50%; background:#eee; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.75rem; flex-shrink:0; transition:background .13s,color .13s; }
+.option.selected  .option-letter { background:#e91e8c; color:white; }
+.option.correct   .option-letter { background:#4caf50; color:white; }
+.option.incorrect .option-letter { background:#f44336; color:white; }
+.opt-text { flex:1; }
+.opt-icon { flex-shrink:0; font-size:.9rem; }
+
+.explanation { margin-top:12px; padding:11px 12px; background:#fff0f6; border-radius:9px; border-left:4px solid #e91e8c; font-size:.81rem; line-height:1.65; display:none; }
+.explanation.show { display:block; }
+.explanation strong { color:#880e4f; }
+
+.ver-sol-wrap { text-align:center; margin-bottom:10px; }
+.btn-ver-sol { background:white; border:2px solid #e91e8c; color:#880e4f; padding:9px 20px; border-radius:9px; font-weight:700; font-size:.82rem; cursor:pointer; min-height:44px; transition:all .13s; }
+.btn-ver-sol:active { background:#fce4ec; }
+
+.btn { padding:10px 18px; border-radius:10px; border:none; font-size:.85rem; font-weight:700; cursor:pointer; transition:all .15s; min-height:44px; }
+.btn:active { transform:scale(.96); }
+.btn-primary   { background:linear-gradient(135deg,#880e4f,#e91e8c); color:white; }
+.btn-primary:active   { opacity:.88; }
+.btn-primary:disabled { opacity:.4; cursor:not-allowed; }
+.btn-secondary { background:#f0f0f0; color:#555; }
+.btn-secondary:active { background:#e0e0e0; }
+.btn-lg { padding:13px 26px; font-size:.92rem; border-radius:12px; }
+.btn-sm { padding:9px 15px; font-size:.8rem; min-height:40px; }
+
+.nav-bar { position:fixed; bottom:0; left:0; right:0; background:white; border-top:1px solid #e0e0e0; padding:8px 14px; padding-bottom:max(8px,env(safe-area-inset-bottom)); display:flex; justify-content:space-between; align-items:center; gap:8px; box-shadow:0 -2px 10px rgba(0,0,0,.07); z-index:200; }
+.nav-info { font-size:.77rem; color:#888; line-height:1.4; }
+.nav-info span { color:#880e4f; font-weight:700; }
+.nav-btns { display:flex; gap:7px; flex-shrink:0; }
+
+.results-screen { background:white; border-radius:14px; padding:24px 16px; box-shadow:0 2px 12px rgba(0,0,0,.08); margin-top:14px; text-align:center; }
+.score-circle { width:108px; height:108px; border-radius:50%; margin:0 auto 16px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:1.85rem; font-weight:900; color:white; }
+.score-good { background:linear-gradient(135deg,#4caf50,#81c784); }
+.score-mid  { background:linear-gradient(135deg,#ff9800,#ffb74d); }
+.score-low  { background:linear-gradient(135deg,#f44336,#e57373); }
+.score-sub  { font-size:.72rem; font-weight:600; opacity:.9; margin-top:2px; }
+.stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin:14px 0; }
+.stat-card { border-radius:10px; padding:12px 6px; }
+.stat-card .n { font-size:1.4rem; font-weight:800; }
+.stat-card .l { font-size:.7rem; margin-top:2px; }
+.stat-correct { background:#e8f5e9; color:#2e7d32; }
+.stat-wrong   { background:#ffebee; color:#c62828; }
+.stat-skip    { background:#fff8e1; color:#f57f17; }
+
+.area-row { display:grid; grid-template-columns:1fr 60px 42px; gap:7px; align-items:center; margin-bottom:9px; }
+.area-name { font-size:.78rem; font-weight:600; color:#333; text-align:left; }
+.area-bar-wrap { background:#f0f0f0; border-radius:10px; height:8px; overflow:hidden; }
+.area-bar { height:100%; border-radius:10px; transition:width .6s; }
+.area-pct { font-size:.78rem; font-weight:700; text-align:right; }
+
+.weak-banner { background:linear-gradient(135deg,#fff8e1,#ffecb3); border-left:4px solid #f9a825; padding:12px 14px; border-radius:9px; margin:13px 0; text-align:left; }
+.weak-banner h4 { color:#e65100; margin-bottom:6px; font-size:.87rem; }
+.weak-banner p  { font-size:.77rem; color:#555; margin-bottom:8px; line-height:1.5; }
+.weak-tags { display:flex; flex-wrap:wrap; gap:5px; }
+.weak-tag { background:white; color:#e65100; padding:4px 10px; border-radius:15px; font-size:.72rem; border:1px solid #ffb74d; font-weight:600; }
+
+.version-badge { background:linear-gradient(135deg,#ff9800,#ffa726); color:white; font-weight:800; padding:6px 14px; border-radius:20px; font-size:.72rem; display:inline-block; margin-bottom:10px; letter-spacing:.5px; box-shadow:0 2px 6px rgba(255,152,0,.35); }
+
+.hidden { display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">⚖️</div>
+  <div class="header-text">
+    <h1>Subdirección de Resoluciones y Normatividad</h1>
+    <p>UTF · Fiscalización · Sancionadores · 🔀 Aleatorio</p>
+  </div>
+  <div class="header-right">
+    <div class="timer" id="timer">50:00</div>
+    <div class="t-lbl">tiempo restante</div>
+  </div>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+
+<div class="main">
+  <div class="start-screen" id="startScreen">
+    <div class="version-badge">🏷️ SIMULACRO V2 · INTERMEDIO</div>
+    <h2>⚖️ Subdirección de Resoluciones y Normatividad</h2>
+    <p style="background:#fce4ec;border-radius:10px;padding:10px;color:#880e4f;font-weight:600;margin-bottom:13px;font-size:.81rem">
+      🎯 Unidad Técnica de Fiscalización (UTF)
+    </p>
+    <div class="level-banner">
+      <strong>🟡 NIVEL INTERMEDIO · V2</strong> — Respuestas concisas y directas con <strong>distractores sofisticados</strong>. Atención a detalles técnicos: plazos exactos, porcentajes, competencias, fuentes prohibidas y criterios jurisprudenciales.
+    </div>
+    <div class="formats-banner">
+      <strong>📝 FORMATOS INCLUIDOS:</strong><br>
+      🟢 <strong>Directo:</strong> pregunta con 3 opciones sustantivas<br>
+      🔵 <strong>Secuencia:</strong> ordena elementos según un criterio<br>
+      🟣 <strong>Relación:</strong> vincula 2 columnas de conceptos<br>
+      🟠 <strong>Caso práctico:</strong> escenario y decisión institucional
+    </div>
+    <div class="info-grid">
+      <div class="info-card"><div class="num">40</div><div class="lbl">Preguntas</div></div>
+      <div class="info-card"><div class="num">50</div><div class="lbl">Minutos</div></div>
+      <div class="info-card"><div class="num">5</div><div class="lbl">Áreas</div></div>
+    </div>
+    <div class="topic-section">
+      <div class="topic-section-title">🏛️ 1. Autoridades en materia de fiscalización (1 pregunta)</div>
+      <div class="topic-grid">
+        <div class="topic-pill"><span>1.1 Distribución de competencias</span><span class="cnt">1</span></div>
+      </div>
+      <div class="topic-section-title">👥 2. Sujetos obligados (6 preguntas)</div>
+      <div class="topic-grid">
+        <div class="topic-pill"><span>2.1 Partidos políticos</span><span class="cnt">1</span></div>
+        <div class="topic-pill"><span>2.2 Precandidaturas e indep.</span><span class="cnt">1</span></div>
+        <div class="topic-pill"><span>2.3 Agrupaciones políticas</span><span class="cnt">1</span></div>
+        <div class="topic-pill"><span>2.4 Organizaciones ciudadanas</span><span class="cnt">1</span></div>
+        <div class="topic-pill"><span>2.5 Observación electoral</span><span class="cnt">1</span></div>
+        <div class="topic-pill"><span>2.6 Candidaturas Poder Judicial</span><span class="cnt">1</span></div>
+      </div>
+      <div class="topic-section-title">💰 3. Origen y aplicación de los recursos (11 preguntas)</div>
+      <div class="topic-grid">
+        <div class="topic-pill"><span>3.1 Financiamiento público</span><span class="cnt">2</span></div>
+        <div class="topic-pill"><span>3.2 Financiamiento privado</span><span class="cnt">3</span></div>
+        <div class="topic-pill"><span>3.3 Proceso electoral</span><span class="cnt">5</span></div>
+        <div class="topic-pill"><span>3.4 Actividades ordinarias</span><span class="cnt">1</span></div>
+      </div>
+      <div class="topic-section-title">⚖️ 4. Resoluciones y acuerdos (18 preguntas)</div>
+      <div class="topic-grid">
+        <div class="topic-pill"><span>4.1 Procedimientos sancionadores</span><span class="cnt">15</span></div>
+        <div class="topic-pill"><span>4.2 Consultas en fiscalización</span><span class="cnt">3</span></div>
+      </div>
+      <div class="topic-section-title">📊 5. Rendición de cuentas (4 preguntas)</div>
+      <div class="topic-grid">
+        <div class="topic-pill"><span>5.1 Informes</span><span class="cnt">2</span></div>
+        <div class="topic-pill"><span>5.2 Infracciones</span><span class="cnt">2</span></div>
+      </div>
+    </div>
+    <div style="background:#f5f5f5;border-radius:9px;padding:10px 12px;margin-bottom:14px;font-size:.7rem;color:#555;text-align:left;line-height:1.6">
+      <strong style="color:#880e4f">📚 BIBLIOGRAFÍA OFICIAL (guía INE)</strong><br>
+      • LGIPE — Ley General de Instituciones y Procedimientos Electorales<br>
+      • LGPP — Ley General de Partidos Políticos<br>
+      • Reglamento de Fiscalización (RF)<br>
+      • Reglamento de Procedimientos Sancionadores en Materia de Fiscalización (RPSMF)<br>
+      • Reglamento de Elecciones (INE)<br>
+      • INE/CG54/2025 — Lineamientos para la Fiscalización de Procesos Electorales del Poder Judicial<br>
+      • Acuerdos del Consejo General sobre topes de gastos y límites de financiamiento
+    </div>
+    <button class="btn btn-primary btn-lg" style="width:100%" onclick="startExam()">Comenzar simulacro →</button>
+  </div>
+
+  <div id="examScreen" class="hidden"></div>
+  <div id="resultsScreen" class="hidden"></div>
+</div>
+
+<div class="nav-bar hidden" id="navBar">
+  <div class="nav-info">
+    Preg. <span id="navCurrent">1</span> de <span id="navTotal">40</span>
+  </div>
+  <div class="nav-btns">
+    <button class="btn btn-secondary btn-sm" id="btnPrev" onclick="prevQ()">← Ant.</button>
+    <button class="btn btn-primary  btn-sm" id="btnNext" onclick="nextQ()">Sig. →</button>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   BANCO DE PREGUNTAS — SUBDIRECCIÓN DE RESOLUCIONES Y NORMATIVIDAD
+   Distribución oficial (Guía INE, 40 preguntas):
+     1.1 Distribución de competencias                         1
+     2.1 Partidos políticos                                   1
+     2.2 Precandidaturas, aspirantes y cand. independientes   1
+     2.3 Agrupaciones políticas nacionales                    1
+     2.4 Organizaciones de ciudadanos                         1
+     2.5 Organizaciones de observación electoral              1
+     2.6 Personas candidatas a cargos del Poder Judicial      1
+     3.1 Financiamiento público                               2
+     3.2 Financiamiento privado                               3
+     3.3 Proceso electoral                                    5
+     3.4 Actividades ordinarias permanentes                   1
+     4.1 Procedimientos administrativos sancionadores        15
+     4.2 Consultas en materia de fiscalización                3
+     5.1 Informes                                             2
+     5.2 Infracciones                                         2
+                                                 TOTAL:     40
+═══════════════════════════════════════════════════════════════ */
+const Q = [
+
+  /* ══════════════════════════════════
+     1.1  DISTRIBUCIÓN DE COMPETENCIAS  (1)
+  ══════════════════════════════════ */
+  { sa:"1.1", sal:"Distribución de competencias", area:"Autoridades en fiscalización", t:"dir",
+    q:"¿Qué órgano es competente, en definitiva, para aprobar los dictámenes consolidados y las resoluciones en materia de fiscalización?",
+    o:["La Comisión de Fiscalización del INE, al ser el órgano técnico especializado en la materia",
+       "La Unidad Técnica de Fiscalización, como autoridad instructora que sustancia los procedimientos",
+       "El Consejo General del INE, a propuesta de la Comisión de Fiscalización y con base en los proyectos elaborados por la UTF"],
+    c:2,
+    ex:"La competencia final es del Consejo General (art. 44 LGIPE). La Comisión supervisa y propone; la UTF instruye y elabora proyectos; pero quien resuelve en definitiva es el Consejo. Los distractores describen funciones reales de los otros órganos, no la competencia resolutiva." },
+
+
+  /* ══════════════════════════════════
+     2.1  PARTIDOS POLÍTICOS  (1)
+  ══════════════════════════════════ */
+  { sa:"2.1", sal:"Partidos políticos", area:"Sujetos obligados", t:"dir",
+    q:"¿Cuál de las siguientes afirmaciones sobre las obligaciones de fiscalización de los partidos políticos es correcta?",
+    o:["Sólo están obligados a presentar informe anual; los demás informes son potestativos según el proceso electoral",
+       "Deben registrar sus operaciones en el Sistema Integral de Fiscalización (SIF) en tiempo real y presentar informes anuales, de precampaña, de apoyo ciudadano y de campaña",
+       "Pueden llevar contabilidad en el sistema de su preferencia siempre que entreguen reportes trimestrales a la UTF"],
+    c:1,
+    ex:"El registro en SIF es obligatorio y en tiempo real (art. 37 Bis RF). Los informes son de presentación obligatoria, no potestativa. No existe libertad de elegir el sistema contable: el SIF es la plataforma única oficial del INE." },
+
+
+  /* ══════════════════════════════════
+     2.2  PRECANDIDATURAS, ASPIRANTES Y CANDIDATURAS INDEPENDIENTES  (1)
+  ══════════════════════════════════ */
+  { sa:"2.2", sal:"Precandidaturas e indep.", area:"Sujetos obligados", t:"dir",
+    q:"Las personas aspirantes a candidaturas independientes, durante el periodo de obtención del apoyo ciudadano, están obligadas a:",
+    o:["Abrir una cuenta bancaria específica para la administración de los recursos del periodo y presentar informe con el origen y destino de los mismos",
+       "Reportar únicamente los gastos que superen el 10% del tope de campaña proyectado",
+       "Presentar informe sólo al concluir el periodo, sin necesidad de contar con cuenta bancaria exclusiva"],
+    c:0,
+    ex:"El principio de bancarización exige cuenta exclusiva para que los recursos sean trazables. No existe umbral del 10% para reportar; todo gasto debe reportarse. La cuenta bancaria debe abrirse antes de recibir recursos, no al final del periodo." },
+
+
+  /* ══════════════════════════════════
+     2.3  AGRUPACIONES POLÍTICAS NACIONALES  (1)
+  ══════════════════════════════════ */
+  { sa:"2.3", sal:"Agrupaciones políticas", area:"Sujetos obligados", t:"dir",
+    q:"Respecto de las Agrupaciones Políticas Nacionales (APN), ¿cuál enunciado es correcto?",
+    o:["No son sujetos obligados porque no participan directamente en procesos electorales con candidaturas propias",
+       "Son sujetos obligados; deben presentar informe anual del origen, monto y destino de sus recursos y se les aplican las reglas del RF en lo conducente",
+       "Sólo se les fiscaliza cuando celebran acuerdos de participación con un partido político durante un proceso electoral"],
+    c:1,
+    ex:"Las APN son sujetos obligados permanentes, independientemente de si participan en procesos electorales o celebran acuerdos con partidos. El RF les aplica en lo conducente (art. 4 RF). Los distractores confunden su régimen con el de partidos o candidaturas." },
+
+
+  /* ══════════════════════════════════
+     2.4  ORGANIZACIONES DE CIUDADANOS  (1)
+  ══════════════════════════════════ */
+  { sa:"2.4", sal:"Organizaciones ciudadanas", area:"Sujetos obligados", t:"dir",
+    q:"Una organización de ciudadanos que busca constituirse como partido político nacional, ¿está sujeta a fiscalización?",
+    o:["No, porque la fiscalización sólo aplica a partidos con registro vigente",
+       "Sólo después de obtener el registro, por los recursos ejercidos durante la etapa de organización",
+       "Sí; debe presentar informes mensuales de ingresos y egresos durante el periodo de obtención de apoyo ciudadano, y el cumplimiento es valorado en la solicitud de registro"],
+    c:2,
+    ex:"La fiscalización aplica desde la etapa de organización: filtro institucional previo al registro. Los informes mensuales son obligatorios durante el periodo. Si se fiscalizara sólo después, perdería sentido como condición para el registro." },
+
+
+  /* ══════════════════════════════════
+     2.5  ORGANIZACIONES DE OBSERVACIÓN ELECTORAL  (1)
+  ══════════════════════════════════ */
+  { sa:"2.5", sal:"Observación electoral", area:"Sujetos obligados", t:"dir",
+    q:"Las organizaciones de observación electoral, respecto de su fiscalización:",
+    o:["Deben presentar a la UTF un informe sobre el origen, monto y aplicación del financiamiento obtenido para sus actividades; el incumplimiento puede derivar en sanciones",
+       "Están exentas por su naturaleza cívica y no lucrativa",
+       "Sólo rinden cuentas ante la Dirección Ejecutiva de Capacitación Electoral, no ante la UTF"],
+    c:0,
+    ex:"La LGIPE y el RF las incluyen como sujetos obligados. Su naturaleza cívica no las exenta; al contrario, la trazabilidad refuerza su legitimidad. La UTF es la autoridad competente, no la DECEyEC, que tiene funciones distintas de capacitación." },
+
+
+  /* ══════════════════════════════════
+     2.6  PERSONAS CANDIDATAS A CARGOS DEL PODER JUDICIAL  (1)
+  ══════════════════════════════════ */
+  { sa:"2.6", sal:"Candidaturas Poder Judicial", area:"Sujetos obligados", t:"dir",
+    q:"Conforme a los Lineamientos INE/CG54/2025, las personas candidatas a cargos del Poder Judicial:",
+    o:["Están sujetas a fiscalización; deben rendir informes, respetar topes y abstenerse de recibir recursos de fuentes prohibidas",
+       "Como no son postuladas por partidos, quedan fuera del régimen de fiscalización del INE",
+       "Se fiscalizan únicamente por los Consejos de la Judicatura, federal o locales, sin intervención del INE"],
+    c:0,
+    ex:"El acuerdo INE/CG54/2025 estableció expresamente que las candidaturas a cargos judiciales son sujetas de fiscalización por la UTF. Los Consejos de la Judicatura no tienen competencia electoral; su función es administrativa respecto del Poder Judicial." },
+
+
+  /* ══════════════════════════════════
+     3.1  FINANCIAMIENTO PÚBLICO  (2)
+  ══════════════════════════════════ */
+  { sa:"3.1", sal:"Financiamiento público", area:"Origen y aplicación", t:"dir",
+    q:"El financiamiento público federal a partidos políticos se distribuye en los siguientes rubros:",
+    o:["Actividades ordinarias permanentes, gastos de campaña y actividades específicas",
+       "Gastos operativos, publicidad y capacitación partidista",
+       "Sueldos de dirigentes, renta de inmuebles y propaganda en radio y televisión"],
+    c:0,
+    ex:"La Constitución (art. 41) y la LGPP fijan tres rubros: ordinarias, campaña y específicas. Los distractores mencionan conceptos que existen como subrubros o gastos internos, pero no son la división normativa principal del financiamiento público." },
+
+  { sa:"3.1", sal:"Financiamiento público", area:"Origen y aplicación", t:"dir",
+    q:"La fórmula de distribución del financiamiento público ordinario entre los partidos políticos con registro vigente es:",
+    o:["Distribución íntegramente proporcional a la votación obtenida en la elección inmediata anterior de diputaciones",
+       "30% de forma igualitaria entre todos los partidos con registro y 70% de forma proporcional a la votación de la elección inmediata anterior de diputaciones",
+       "50% de forma igualitaria y 50% de forma proporcional a la votación nacional de la última elección presidencial"],
+    c:1,
+    ex:"La fórmula correcta es 30% igualitario / 70% proporcional, con base en la elección de diputaciones (art. 51 LGPP). No hay distribución totalmente proporcional, ni se usa como referencia la elección presidencial." },
+
+
+  /* ══════════════════════════════════
+     3.2  FINANCIAMIENTO PRIVADO  (3)
+  ══════════════════════════════════ */
+  { sa:"3.2", sal:"Financiamiento privado", area:"Origen y aplicación", t:"dir",
+    q:"La relación entre el financiamiento público y el privado de los partidos políticos se rige por la regla de que:",
+    o:["El financiamiento privado puede superar al público hasta en un 50% si la militancia así lo autoriza",
+       "Ambos deben ser equivalentes en monto conforme al principio de paridad financiera",
+       "El financiamiento público debe prevalecer; la suma total del privado, bajo todas sus modalidades, no puede superar al público"],
+    c:2,
+    ex:"Principio constitucional de prevalencia del financiamiento público (art. 41). No existe 'paridad financiera' como principio legal, ni facultad de la militancia para alterar esa regla estructural." },
+
+  { sa:"3.2", sal:"Financiamiento privado", area:"Origen y aplicación", t:"dir",
+    q:"¿Cuál de las siguientes NO es una modalidad de financiamiento privado permitida?",
+    o:["Autofinanciamiento por actividades promocionales del partido (rifas, eventos culturales, venta editorial)",
+       "Aportaciones de personas morales mexicanas cuyo domicilio fiscal esté en territorio nacional",
+       "Rendimientos financieros generados por inversiones del patrimonio partidista en instrumentos del sistema financiero mexicano"],
+    c:1,
+    ex:"Las aportaciones de personas morales están expresamente prohibidas (art. 54 LGPP), sin importar su domicilio fiscal. El detalle del domicilio es un distractor sofisticado: suena razonable pero la prohibición es absoluta para cualquier persona moral." },
+
+  { sa:"3.2", sal:"Financiamiento privado", area:"Origen y aplicación", t:"dir",
+    q:"¿Cuál de los siguientes es un ejemplo de fuente de financiamiento prohibida?",
+    o:["Cuotas ordinarias de la militancia cuya periodicidad determina el propio partido",
+       "Aportaciones de una asociación civil nacional no religiosa y sin fines de lucro",
+       "Aportaciones en especie documentadas de simpatizantes dentro del límite individual anual"],
+    c:1,
+    ex:"Las asociaciones civiles son personas morales; su naturaleza no lucrativa y laica no las exime de la prohibición (art. 54 LGPP). Las cuotas de militantes y las aportaciones documentadas de simpatizantes dentro de límite son fuentes válidas." },
+
+
+  /* ══════════════════════════════════
+     3.3  PROCESO ELECTORAL  (5)
+  ══════════════════════════════════ */
+  { sa:"3.3", sal:"Proceso electoral", area:"Origen y aplicación", t:"dir",
+    q:"El tope de gastos de precampaña por precandidatura se determina como:",
+    o:["El 20% del tope de gastos de la campaña inmediata anterior del mismo cargo",
+       "El 50% del financiamiento público ordinario anual del partido",
+       "Un monto fijo por precandidatura determinado directamente por cada partido"],
+    c:0,
+    ex:"Regla legal uniforme: 20% del tope de la campaña inmediata anterior del mismo cargo. El 50% del ordinario corresponde al financiamiento de campaña del partido (elección presidencial), no a topes por precandidatura. Los partidos no fijan topes." },
+
+  { sa:"3.3", sal:"Proceso electoral", area:"Origen y aplicación", t:"dir",
+    q:"Conforme al artículo 41 constitucional, el rebase del tope de gastos de campaña puede actualizar causa de nulidad de la elección cuando:",
+    o:["El rebase supere el 5% del tope autorizado y se demuestre que fue determinante para el resultado",
+       "El rebase supere el 10% del tope, sin necesidad de demostrar determinancia",
+       "Cualquier rebase, por mínimo que sea, acarrea nulidad automática de la elección"],
+    c:0,
+    ex:"Dos requisitos copulativos: (i) rebase > 5% y (ii) determinancia para el resultado, probada ante el TEPJF. El 10% no figura en la norma. La nulidad nunca opera automáticamente; siempre requiere análisis jurisdiccional." },
+
+  { sa:"3.3", sal:"Proceso electoral", area:"Origen y aplicación", t:"dir",
+    q:"Respecto del Sistema Integral de Fiscalización (SIF):",
+    o:["Es una plataforma de consulta pública de resultados electorales sin efectos contables",
+       "Es la herramienta oficial en la que los sujetos obligados registran operaciones en línea y en tiempo real, cargan documentación comprobatoria y presentan sus informes",
+       "Es un sistema auxiliar opcional que los partidos pueden usar si lo prefieren a su contabilidad interna"],
+    c:1,
+    ex:"El SIF es obligatorio, único y oficial (art. 37 Bis RF). No es opcional ni auxiliar. Tampoco es plataforma de resultados electorales (esos son otros sistemas, como el PREP)." },
+
+  { sa:"3.3", sal:"Proceso electoral", area:"Origen y aplicación", t:"cas",
+    p:"Una campaña a diputación federal reportó gastos por $1,620,000 en el SIF. El monitoreo de la UTF detectó gastos no reportados adicionales por $180,000, cuantificados con precios del RNP. El tope de campaña aprobado era $1,648,189.",
+    pt:"Caso práctico · Rebase agregado",
+    q:"¿Qué infracciones se configuran?",
+    o:["Únicamente omisión de reporte; no hay rebase porque lo reportado está debajo del tope",
+       "Únicamente rebase de tope; la omisión queda subsumida en el rebase",
+       "Dos infracciones distintas: omisión de reporte ($180,000) y rebase de tope ($1,800,000 − $1,648,189 = $151,811)"],
+    c:2,
+    ex:"La fiscalización suma lo reportado y lo detectado. En el caso, la suma ($1.8M) supera el tope, configurando rebase; además persiste la omisión original. Son infracciones independientes con sanciones propias, no una subsume a la otra." },
+
+  { sa:"3.3", sal:"Proceso electoral", area:"Origen y aplicación", t:"seq",
+    listadoTitle:"Etapas de la fiscalización concurrente en un proceso electoral (desordenadas):",
+    listado:[
+      "Aprobación del dictamen y la resolución por el Consejo General, antes de la calificación de la elección",
+      "Registro en tiempo real de operaciones en el SIF por los sujetos obligados",
+      "Emisión de oficios de errores y omisiones por la UTF con base en la revisión",
+      "Presentación de informes por los sujetos obligados dentro del plazo legal",
+      "Respuesta a los oficios y, en su caso, rectificación o aclaración por los sujetos"],
+    q:"¿Cuál es el orden correcto?",
+    o:["2, 4, 3, 5, 1",
+       "4, 2, 1, 3, 5",
+       "2, 4, 1, 5, 3"],
+    c:0,
+    ex:"Registro continuo (2) → Presentación de informe (4) → Oficios de errores y omisiones (3) → Respuesta del sujeto (5) → Aprobación por el Consejo (1). La lógica: contabilidad en línea, informe formal, revisión, contradicción, resolución." },
+
+
+  /* ══════════════════════════════════
+     3.4  ACTIVIDADES ORDINARIAS PERMANENTES  (1)
+  ══════════════════════════════════ */
+  { sa:"3.4", sal:"Actividades ordinarias", area:"Origen y aplicación", t:"dir",
+    q:"Del financiamiento público ordinario que reciben anualmente los partidos, ¿qué porcentaje mínimo deben destinar al liderazgo político de las mujeres?",
+    o:["El 2% del financiamiento ordinario anual",
+       "El 3% del financiamiento ordinario anual",
+       "El 5% del financiamiento ordinario anual"],
+    c:1,
+    ex:"El 3% es el mínimo para liderazgo político de las mujeres (art. 51 LGPP). El 2% corresponde a actividades específicas en general. El 5% no figura en la norma. Distinguir estos dos porcentajes es error común." },
+
+
+  /* ══════════════════════════════════
+     4.1  PROCEDIMIENTOS ADMINISTRATIVOS SANCIONADORES EN MATERIA DE FISCALIZACIÓN  (15)
+  ══════════════════════════════════ */
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"El procedimiento administrativo sancionador en materia de fiscalización puede iniciarse por dos vías:",
+    o:["Queja (a instancia de parte) y procedimiento oficioso (iniciado por el INE)",
+       "Denuncia penal ante la FGR y juicio ciudadano ante el TEPJF",
+       "Auditoría externa y revisión administrativa interna"],
+    c:0,
+    ex:"Las dos vías son queja y oficioso (RPSMF). La denuncia penal y el juicio ciudadano son figuras distintas con naturaleza penal/jurisdiccional. La auditoría externa no es una vía de inicio del procedimiento sancionador administrativo." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Los procedimientos oficiosos derivados de la revisión de informes prescriben en:",
+    o:["3 años contados desde los hechos presuntamente infractores",
+       "90 días siguientes a la aprobación de la resolución correspondiente",
+       "180 días naturales contados a partir del inicio del procedimiento"],
+    c:1,
+    ex:"90 días desde la aprobación de la resolución (art. 26 RPSMF). Los 3 años aplican a oficiosos de naturaleza distinta (no derivados de la revisión de informes). Los 180 días no corresponden a ningún plazo de prescripción en la norma." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Cuando el procedimiento de queja amerite emplazamiento, el plazo para que el denunciado conteste es:",
+    o:["10 días hábiles prorrogables por otros 5 a solicitud del denunciado",
+       "48 horas improrrogables, conforme al artículo 41 del RPSMF",
+       "72 horas hábiles contadas desde la publicación en estrados"],
+    c:1,
+    ex:"48 horas improrrogables (art. 41 RPSMF). No hay prórroga ni plazo de 10 días hábiles. Las 72 horas confunden con plazos de otros procedimientos administrativos distintos." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Conforme a la sentencia SUP-RAP-202/2023 del TEPJF, ¿qué órgano tiene competencia para desechar quejas en materia de fiscalización?",
+    o:["La Unidad Técnica de Fiscalización, por ser la autoridad instructora",
+       "La Comisión de Fiscalización, por delegación del Consejo General",
+       "Exclusivamente el Consejo General del INE, por reserva de ley"],
+    c:2,
+    ex:"La Sala Superior dejó sin efectos la atribución que el INE había otorgado a la UTF y a la Comisión. La LGIPE reserva esta competencia al Consejo General; ni la UTF ni la Comisión pueden desechar por sí solas, aunque elaboren el proyecto." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"La causal de improcedencia por pruebas exclusivamente de redes sociales, tras la sentencia SUP-RAP-202/2023, aplica cuando:",
+    o:["La queja está vinculada a un proceso electoral y la prueba proviene de los perfiles del propio sujeto obligado",
+       "La queja proviene de cualquier captura de pantalla, con independencia del perfil y del proceso",
+       "La queja se basa en publicaciones en medios digitales tradicionales (periódicos y noticieros en línea)"],
+    c:0,
+    ex:"El TEPJF precisó dos requisitos: (i) vinculación a proceso electoral y (ii) prueba exclusivamente de los perfiles del propio sujeto obligado. La causal es acotada, no amplia; y no abarca medios digitales tradicionales, sólo redes sociales del propio denunciado." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"rel",
+    relTitle:"Relacione cada etapa del procedimiento sancionador con su orden",
+    colA:{ title:"Etapa", items:[
+      "Queja o acuerdo oficioso",
+      "Emplazamiento y garantía de audiencia",
+      "Instrucción (pruebas y alegatos)",
+      "Resolución por el Consejo General"] },
+    colB:{ title:"Momento procesal", items:[
+      "a) Inicio del procedimiento",
+      "b) Contradicción y contestación del denunciado",
+      "c) Desahogo probatorio y proyecto de resolución",
+      "d) Decisión final con imposición, en su caso, de sanción",
+      "e) Ejecución forzosa de la sanción"] },
+    q:"Seleccione la opción correcta:",
+    o:["1a, 2b, 3c, 4d",
+       "1b, 2a, 3d, 4c",
+       "1a, 2c, 3b, 4e"],
+    c:0,
+    ex:"Secuencia natural: inicio → audiencia → instrucción → resolución. La opción 'e' (ejecución forzosa) no forma parte del procedimiento sancionador sino de su cumplimiento posterior, generalmente a cargo de otras áreas." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Al individualizar la sanción, la autoridad debe considerar, entre otros factores:",
+    o:["Únicamente el monto involucrado y el grado de cumplimiento contable",
+       "Gravedad, dolo o culpa, modo-tiempo-lugar, condiciones del infractor, medios de ejecución y reincidencia",
+       "Sólo la capacidad económica del partido, medida por su financiamiento público del año"],
+    c:1,
+    ex:"El art. 458.5 LGIPE lista múltiples factores. Reducir el análisis al monto o a la capacidad económica es insuficiente y acarrea revocación por el TEPJF por falta de individualización y proporcionalidad." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"El acceso al expediente por las partes en el procedimiento sancionador:",
+    o:["Está regulado en el artículo 36 Bis del RPSMF; la confidencialidad se resuelve con versiones testadas, no con denegación total",
+       "Es facultad discrecional de la UTF, que puede negarlo cuando lo estime necesario para la investigación",
+       "Sólo procede una vez notificada la resolución final, para efectos de impugnación"],
+    c:0,
+    ex:"El acceso es derecho vinculado a la garantía de audiencia (art. 14 constitucional). No es discrecional ni posterior a la resolución. La confidencialidad parcial se resuelve con versiones testadas; denegar el acceso íntegro es causa de nulidad." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"En materia de valuación de operaciones no reportadas, el Reglamento de Fiscalización permite a la UTF utilizar:",
+    o:["El precio más alto observado en el mercado, para maximizar la sanción al infractor",
+       "Precios de referencia del RNP, cotizaciones, catálogos, análisis de mercado y precios reportados en procesos recientes",
+       "Únicamente el valor declarado por el proveedor del bien o servicio"],
+    c:1,
+    ex:"La metodología del RF exige determinar un valor razonable y defendible con distintas fuentes objetivas. Usar siempre el más alto es punitivo y se anula por el TEPJF; usar sólo el declarado por el proveedor es insuficiente si ese valor está por debajo del mercado." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"La modalidad preferente de notificación a los sujetos obligados en los procedimientos de fiscalización es:",
+    o:["La notificación personal en el domicilio registrado, con dos visitas en días distintos",
+       "La notificación electrónica a través del módulo del SIF; la fecha es la del acuse de recepción electrónica",
+       "La publicación por estrados durante cinco días hábiles en las oficinas centrales del INE"],
+    c:1,
+    ex:"La electrónica es la preferente (reforma INE/CG523/2023). La personal y los estrados siguen siendo modalidades válidas, pero no preferentes. La fecha relevante es el acuse electrónico, no la publicación física." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"La resolución en la que no se acredita la conducta denunciada por insuficiencia probatoria es:",
+    o:["Desechamiento por improcedencia",
+       "Sobreseimiento por causa sobreviniente",
+       "Infundada por falta de acreditación de la conducta"],
+    c:2,
+    ex:"Infundada = no se acreditó la infracción. Desechamiento = notoriamente improcedente desde el inicio. Sobreseimiento = causa sobrevenida que impide continuar (p. ej., muerte del denunciado persona física). Confundirlos es error técnico grave." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"cas",
+    p:"Durante la sustanciación de un procedimiento sancionador, el denunciado persona física fallece. No existe responsabilidad transmisible ni conducta atribuible a persona distinta.",
+    pt:"Caso práctico · Causa sobreviniente",
+    q:"¿Qué tipo de resolución procede?",
+    o:["Infundada por ausencia sobrevenida de sujeto pasivo",
+       "Sobreseimiento por causa sobreviniente que impide la prosecución",
+       "Desechamiento por improcedencia originaria de la queja"],
+    c:1,
+    ex:"El sobreseimiento aplica cuando una causa surgida después de la admisión impide seguir (muerte, desistimiento válido, hechos que dejan sin materia). La infundada requiere análisis de fondo. El desechamiento opera antes de admitir, no después." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Los principios del derecho sancionador aplicables al procedimiento administrativo en materia de fiscalización incluyen:",
+    o:["Legalidad, tipicidad, presunción de inocencia, non bis in idem, proporcionalidad, debido proceso y culpabilidad",
+       "Únicamente celeridad y economía procesal, por el carácter expedito de la fiscalización electoral",
+       "Inversión de la carga probatoria a favor del denunciante y culpabilidad objetiva por resultado"],
+    c:0,
+    ex:"El ius puniendi estatal aplica los principios garantistas, con matices. La celeridad existe pero no desplaza los principios sustantivos. La inversión de carga probatoria contra el denunciado es contraria a la presunción de inocencia." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"¿Cuál NO es una función de la Subdirección de Resoluciones y Normatividad?",
+    o:["Supervisar y validar proyectos de resolución sobre informes de ingresos y gastos",
+       "Supervisar anteproyectos de modificación a reglamentos y lineamientos en materia de fiscalización",
+       "Ejecutar directamente las visitas de verificación y monitoreo en campo a los partidos políticos"],
+    c:2,
+    ex:"La ejecución de visitas en campo corresponde a otras áreas operativas de la UTF (auditoría, verificación). La Subdirección supervisa proyectos de resolución y anteproyectos normativos; no realiza actividad de campo directa." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"La Ley General de Instituciones y Procedimientos Electorales prevé, entre las sanciones aplicables a partidos políticos, la reducción de ministraciones. ¿Cuál es el límite legal de esa reducción?",
+    o:["Hasta el 25% de la ministración mensual por un periodo máximo de 6 meses",
+       "Hasta el 50% de las ministraciones que correspondan, por el periodo que señale la resolución",
+       "Hasta el 100% de la ministración anual, sin límite temporal"],
+    c:1,
+    ex:"El art. 456 LGIPE establece reducción hasta del 50%. El 25% no figura. El 100% corresponde a la supresión total de prerrogativas, que es una sanción distinta y de mayor gravedad, no a la 'reducción'." },
+
+
+  /* ══════════════════════════════════
+     4.2  CONSULTAS EN MATERIA DE FISCALIZACIÓN  (3)
+  ══════════════════════════════════ */
+  { sa:"4.2", sal:"Consultas en fiscalización", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Las consultas que los sujetos obligados formulan a la UTF en materia de fiscalización tienen carácter:",
+    o:["Resolutivo y vinculante, con efectos de cosa juzgada sobre la materia consultada",
+       "Orientador; no agotan la facultad de fiscalización posterior ni eximen de responsabilidad si los hechos reales difieren",
+       "Privado y reservado; sus efectos sólo alcanzan al sujeto consultante sin constituir criterio institucional"],
+    c:1,
+    ex:"Las consultas orientan, no resuelven. No impiden la fiscalización posterior ni generan cosa juzgada. Tampoco son privadas: los criterios relevantes se difunden para dar certeza a todos los sujetos obligados." },
+
+  { sa:"4.2", sal:"Consultas en fiscalización", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Una consulta debe formularse:",
+    o:["Antes de realizar la conducta o la operación sobre la que se pregunta, para tener efecto orientador",
+       "En cualquier momento, incluso durante un procedimiento sancionador abierto sobre el mismo tema",
+       "Únicamente después de concluido el ejercicio fiscal para no interferir con la operación ordinaria"],
+    c:0,
+    ex:"El carácter preventivo exige oportunidad temporal: antes del hecho. Consultar durante un procedimiento abierto sobre el mismo tema es improcedente por ser materia sub judice. Esperar al final del ejercicio desnaturaliza el instrumento." },
+
+  { sa:"4.2", sal:"Consultas en fiscalización", area:"Resoluciones y acuerdos", t:"cas",
+    p:"Un partido formula una consulta a la UTF sobre gastos ya erogados, respecto de los cuales ya existe investigación preliminar abierta en la UTF.",
+    pt:"Caso práctico · Consulta sobre materia sub judice",
+    q:"¿Cuál es la respuesta institucional adecuada?",
+    o:["Responder con criterio favorable al partido para otorgarle certeza frente a la investigación",
+       "Declarar la improcedencia por ser materia de procedimiento abierto y remitir al sujeto a las vías procesales ordinarias",
+       "Suspender la investigación preliminar hasta que se resuelva la consulta formulada"],
+    c:1,
+    ex:"Responder en sentido concreto sobre hechos ya en investigación compromete la imparcialidad y la función sancionadora. Suspender la investigación subordinaría la facultad fiscalizadora a la voluntad del sujeto. La improcedencia protege ambos fines." },
+
+
+  /* ══════════════════════════════════
+     5.1  INFORMES  (2)
+  ══════════════════════════════════ */
+  { sa:"5.1", sal:"Informes", area:"Rendición de cuentas", t:"dir",
+    q:"Los tipos de informes que los partidos políticos deben presentar a la UTF incluyen:",
+    o:["Anual, de precampaña, de obtención de apoyo ciudadano y de campaña",
+       "Mensual, semestral, de precampaña y de resultados electorales",
+       "Únicamente anual, en una sola exhibición al cierre del ejercicio fiscal"],
+    c:0,
+    ex:"La LGPP y el RF definen esos cuatro tipos principales. No existe informe 'semestral' ni 'de resultados electorales' como figura de fiscalización. Reducirlo a sólo el anual ignora la fiscalización concurrente del proceso electoral." },
+
+  { sa:"5.1", sal:"Informes", area:"Rendición de cuentas", t:"dir",
+    q:"El dictamen consolidado emitido por la UTF como resultado de la revisión de informes:",
+    o:["Se aprueba directamente por la UTF y adquiere firmeza sin intervención de otros órganos",
+       "Se somete a consideración de la Comisión de Fiscalización y, finalmente, a la aprobación del Consejo General",
+       "Se envía primero al TEPJF para su validación jurisdiccional antes de ser aprobado por el INE"],
+    c:1,
+    ex:"Cadena institucional: UTF elabora → Comisión revisa y propone → Consejo General aprueba. La UTF no aprueba en definitiva. El TEPJF interviene sólo en vía de impugnación posterior, no como instancia previa de validación." },
+
+
+  /* ══════════════════════════════════
+     5.2  INFRACCIONES  (2)
+  ══════════════════════════════════ */
+  { sa:"5.2", sal:"Infracciones", area:"Rendición de cuentas", t:"dir",
+    q:"La sanción tipo aplicable a las aportaciones de fuente prohibida es, por regla general:",
+    o:["Amonestación pública con publicación en el DOF durante 30 días naturales",
+       "Multa equivalente al 100% hasta el 200% del monto involucrado en la aportación",
+       "Cancelación automática del registro del partido por tratarse de infracción grave"],
+    c:1,
+    ex:"La sanción pecuniaria del 100-200% es la regla. La amonestación pública es sanción menor reservada a infracciones leves. La cancelación del registro no es automática; procede sólo en casos especialmente graves y sistemáticos." },
+
+  { sa:"5.2", sal:"Infracciones", area:"Rendición de cuentas", t:"dir",
+    q:"Respecto a la relación entre infracciones administrativas y delitos electorales:",
+    o:["Son excluyentes: una misma conducta sólo puede generar responsabilidad administrativa o penal, nunca ambas",
+       "Son independientes: una misma conducta puede generar ambas responsabilidades, seguidas ante autoridades distintas",
+       "Las infracciones administrativas absorben a los delitos electorales cuando versan sobre fiscalización"],
+    c:1,
+    ex:"Responsabilidad administrativa (INE) y penal (FGR) son independientes y pueden coexistir sin vulnerar non bis in idem, por ser órdenes distintos. No hay absorción de la materia penal por la administrativa." }
+
+];
+
+/* ═══════════════════════════════════════════════════
+   ALEATORIZACIÓN
+═══════════════════════════════════════════════════ */
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function shuffleOptions(q) {
+  const indices = [0, 1, 2];
+  const shuffled = shuffleArray(indices);
+  return { ...q, o: shuffled.map(i => q.o[i]), c: shuffled.indexOf(q.c) };
+}
+const SUBS = ["1.1","2.1","2.2","2.3","2.4","2.5","2.6","3.1","3.2","3.3","3.4","4.1","4.2","5.1","5.2"];
+const shuffledQ = SUBS.flatMap(sub =>
+  shuffleArray(Q.filter(q => q.sa === sub)).map(q => shuffleOptions(q))
+);
+Q.length = 0;
+shuffledQ.forEach(q => Q.push(q));
+
+const TIME_LIMIT = 50 * 60;
+let answers, revealed, current, timerInterval, secondsLeft;
+
+const SS = {
+  "1.1":{bg:"#e8eaf6",color:"#1a237e",icon:"🏛️"},
+  "2.1":{bg:"#e3f2fd",color:"#0d47a1",icon:"🎗️"},
+  "2.2":{bg:"#e0f2f1",color:"#004d40",icon:"🧑‍⚖️"},
+  "2.3":{bg:"#f3e5f5",color:"#4a148c",icon:"🤝"},
+  "2.4":{bg:"#fff3e0",color:"#e65100",icon:"👥"},
+  "2.5":{bg:"#e0f7fa",color:"#006064",icon:"👁️"},
+  "2.6":{bg:"#fce4ec",color:"#880e4f",icon:"⚖️"},
+  "3.1":{bg:"#e8f5e9",color:"#1b5e20",icon:"💰"},
+  "3.2":{bg:"#fff8e1",color:"#f57f17",icon:"💵"},
+  "3.3":{bg:"#ede7f6",color:"#311b92",icon:"🗳️"},
+  "3.4":{bg:"#f1f8e9",color:"#33691e",icon:"📅"},
+  "4.1":{bg:"#ffebee",color:"#b71c1c",icon:"⚖️"},
+  "4.2":{bg:"#e1f5fe",color:"#01579b",icon:"❓"},
+  "5.1":{bg:"#fce4ec",color:"#880e4f",icon:"📋"},
+  "5.2":{bg:"#efebe9",color:"#3e2723",icon:"🚫"}
+};
+
+const TYPE_LABELS = {
+  "dir":{ cls:"dir", label:"🟢 DIRECTO" },
+  "cas":{ cls:"cas", label:"🟠 CASO" },
+  "seq":{ cls:"seq", label:"🔵 SECUENCIA" },
+  "rel":{ cls:"rel", label:"🟣 RELACIÓN" }
+};
+
+function startExam() {
+  answers  = new Array(Q.length).fill(null);
+  revealed = new Array(Q.length).fill(false);
+  current  = 0;
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('examScreen').classList.remove('hidden');
+  document.getElementById('navBar').classList.remove('hidden');
+  renderQuestion(0);
+  startTimer();
+}
+
+function renderQuestion(idx) {
+  current = idx;
+  const q = Q[idx], sc = SS[q.sa] || {bg:"#fce4ec",color:"#880e4f",icon:"📌"};
+  const isR = revealed[idx], sel = answers[idx];
+
+  let ph = '';
+  if (q.p) ph = `<div class="passage"><div class="passage-label">📄 ${q.pt}</div>${q.p.replace(/\n/g,'<br>')}</div>`;
+
+  let listadoHTML = '';
+  if (q.t === 'seq' && q.listado) {
+    const items = q.listado.map((it, i) => `<li><strong>${i+1}.</strong> ${it}</li>`).join('');
+    listadoHTML = `<div class="listado">
+      <div class="listado-title">📋 ${q.listadoTitle || 'Elementos a ordenar'}</div>
+      <ul style="list-style:none;padding-left:0">${items}</ul>
+    </div>`;
+  }
+
+  let relHTML = '';
+  if (q.t === 'rel' && q.colA && q.colB) {
+    const aItems = q.colA.items.map((it, i) => `<li><strong>${i+1}.</strong> ${it}</li>`).join('');
+    const bItems = q.colB.items.map(it => `<li>${it}</li>`).join('');
+    relHTML = `<div class="listado">
+      <div class="listado-title">🔗 ${q.relTitle || 'Relacione las columnas'}</div>
+      <div class="rel-cols">
+        <div class="rel-col">
+          <div class="rel-col-title">${q.colA.title}</div>
+          <ul style="list-style:none;padding-left:0">${aItems}</ul>
+        </div>
+        <div class="rel-col">
+          <div class="rel-col-title">${q.colB.title}</div>
+          <ul>${bItems}</ul>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const L = ['A','B','C'];
+  const opts = q.o.map((o, i) => {
+    let cls = 'option', icon = '';
+    if (isR) {
+      cls += ' disabled';
+      if (i === q.c) { cls += ' correct'; icon = '<span class="opt-icon">✅</span>'; }
+      else if (i === sel && i !== q.c) { cls += ' incorrect'; icon = '<span class="opt-icon">❌</span>'; }
+    } else if (i === sel) cls += ' selected';
+    return `<div class="${cls}" onclick="selOpt(${idx},${i})">
+      <div class="option-letter">${L[i]}</div>
+      <div class="opt-text">${o}</div>${icon}
+    </div>`;
+  }).join('');
+
+  const ri = isR && sel !== null && sel !== q.c
+    ? ['A','B','C'][sel] + ' era incorrecta'
+    : '';
+
+  const typeInfo = TYPE_LABELS[q.t] || TYPE_LABELS["dir"];
+  const typeBadge = `<span class="q-type ${typeInfo.cls}">${typeInfo.label}</span>`;
+
+  document.getElementById('examScreen').innerHTML = `
+    <div class="question-card">
+      <div class="q-meta">
+        <span class="q-badge" style="background:${sc.bg};color:${sc.color}">${sc.icon} ${q.sal}</span>
+        <div class="q-right">${typeBadge}<span class="q-num">${idx+1}/${Q.length}</span></div>
+      </div>
+      ${ph}
+      ${listadoHTML}
+      ${relHTML}
+      <div class="question-text">${q.q}</div>
+      <div class="options">${opts}</div>
+      <div class="explanation ${isR ? 'show' : ''}"><strong>${ri}${ri ? ' — ' : ''}Explicación:</strong> ${q.ex}</div>
+    </div>
+    ${!isR && answers[idx] !== null
+      ? `<div class="ver-sol-wrap"><button class="btn-ver-sol" onclick="rev(${idx})">Ver explicación 💡</button></div>`
+      : ''}
+  `;
+
+  document.getElementById('progressBar').style.width = ((idx+1)/Q.length*100) + '%';
+  document.getElementById('navCurrent').textContent = idx + 1;
+  document.getElementById('navTotal').textContent   = Q.length;
+  document.getElementById('btnPrev').disabled = idx === 0;
+  document.getElementById('btnNext').textContent = idx === Q.length-1 ? '🏁 Finalizar' : 'Sig. →';
+  window.scrollTo({top: 0, behavior: 'instant'});
+}
+
+function selOpt(qi, oi) { if (revealed[qi]) return; answers[qi] = oi; renderQuestion(qi); }
+function rev(idx) { revealed[idx] = true; renderQuestion(idx); }
+function nextQ() { if (current < Q.length-1) renderQuestion(current+1); else showResults(); }
+function prevQ() { if (current > 0) renderQuestion(current-1); }
+
+function startTimer() {
+  secondsLeft = TIME_LIMIT;
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m = Math.floor(secondsLeft/60).toString().padStart(2,'0');
+    const s = (secondsLeft%60).toString().padStart(2,'0');
+    const el = document.getElementById('timer');
+    el.textContent = `${m}:${s}`;
+    el.className = 'timer' + (secondsLeft < 300 ? ' danger' : secondsLeft < 600 ? ' warning' : '');
+    if (secondsLeft <= 0) { clearInterval(timerInterval); showResults(); }
+  }, 1000);
+}
+
+function showResults() {
+  clearInterval(timerInterval);
+  document.getElementById('examScreen').classList.add('hidden');
+  document.getElementById('navBar').classList.add('hidden');
+
+  const total    = Q.length;
+  const answered = answers.filter(a => a !== null).length;
+  const correct  = answers.filter((a, i) => a === Q[i].c).length;
+  const wrong    = answered - correct;
+  const skipped  = total - answered;
+  const pct      = Math.round(correct / total * 100);
+
+  const areas = {};
+  Q.forEach((q, i) => {
+    if (!areas[q.area]) areas[q.area] = {total:0, correct:0};
+    areas[q.area].total++;
+    if (answers[i] === q.c) areas[q.area].correct++;
+  });
+
+  const subs = {};
+  Q.forEach((q, i) => {
+    if (!subs[q.sa]) subs[q.sa] = {label:q.sal, total:0, correct:0};
+    subs[q.sa].total++;
+    if (answers[i] === q.c) subs[q.sa].correct++;
+  });
+
+  const types = {};
+  Q.forEach((q, i) => {
+    const t = q.t || "dir";
+    if (!types[t]) types[t] = {total:0, correct:0};
+    types[t].total++;
+    if (answers[i] === q.c) types[t].correct++;
+  });
+
+  const weak = Object.entries(subs).filter(([,s]) => s.correct/s.total < 0.6).map(([,s]) => s.label);
+  const cc   = pct >= 70 ? 'score-good' : pct >= 50 ? 'score-mid' : 'score-low';
+  const msg  = pct >= 80 ? '¡Excelente! Dominas los procedimientos sancionadores en materia de fiscalización.'
+             : pct >= 60 ? 'Buen nivel. Refuerza los temas marcados.'
+             : 'Diagnóstico listo. Estudia los temas señalados antes del examen.';
+
+  const areaColors = {
+    "Autoridades en fiscalización": "#1a237e",
+    "Sujetos obligados":            "#0d47a1",
+    "Origen y aplicación":          "#33691e",
+    "Resoluciones y acuerdos":      "#b71c1c",
+    "Rendición de cuentas":         "#880e4f"
+  };
+
+  const rows = Object.entries(areas).map(([name, a]) => {
+    const p    = Math.round(a.correct / a.total * 100);
+    const icon = p >= 80 ? '✅' : p >= 60 ? '⚠️' : '❌';
+    const bc   = p >= 60
+      ? `linear-gradient(90deg,${areaColors[name]||'#880e4f'},#e91e8c)`
+      : 'linear-gradient(90deg,#c62828,#ef5350)';
+    return `<div class="area-row">
+      <div class="area-name">${icon} ${name}</div>
+      <div class="area-bar-wrap"><div class="area-bar" style="width:${p}%;background:${bc}"></div></div>
+      <div class="area-pct" style="color:${p>=60?'#880e4f':'#c62828'}">${p}%</div>
+    </div>`;
+  }).join('');
+
+  const typeLabelsMap = {"dir":"🟢 Directo","cas":"🟠 Caso","seq":"🔵 Secuencia","rel":"🟣 Relación"};
+  const typeRows = Object.entries(types).map(([t, a]) => {
+    const p = Math.round(a.correct / a.total * 100);
+    const bc = p >= 60
+      ? 'linear-gradient(90deg,#880e4f,#e91e8c)'
+      : 'linear-gradient(90deg,#c62828,#ef5350)';
+    return `<div class="area-row">
+      <div class="area-name">${typeLabelsMap[t]} (${a.correct}/${a.total})</div>
+      <div class="area-bar-wrap"><div class="area-bar" style="width:${p}%;background:${bc}"></div></div>
+      <div class="area-pct" style="color:${p>=60?'#880e4f':'#c62828'}">${p}%</div>
+    </div>`;
+  }).join('');
+
+  const wb = weak.length
+    ? `<div class="weak-banner"><h4>🎯 Estudia esto primero:</h4><p>Menos del 60% en estas subáreas. Son clave para el cargo.</p><div class="weak-tags">${weak.map(t=>`<span class="weak-tag">📌 ${t}</span>`).join('')}</div></div>`
+    : `<div style="background:#fce4ec;border-radius:10px;padding:13px;margin:13px 0;color:#880e4f;font-weight:600">✅ ¡Dominas todas las áreas!</div>`;
+
+  const tu = TIME_LIMIT - secondsLeft;
+  const tm = Math.floor(tu/60), ts = tu%60;
+
+  document.getElementById('resultsScreen').innerHTML = `
+    <div class="results-screen">
+      <div style="background:#fce4ec;border-radius:10px;padding:9px 14px;margin-bottom:16px;font-size:.8rem;color:#880e4f;font-weight:600">
+        ⚖️ DIAGNÓSTICO · SUBDIRECCIÓN RESOLUCIONES Y NORMATIVIDAD — ${new Date().toLocaleDateString('es-MX')}
+      </div>
+      <div class="score-circle ${cc}">${pct}%<div class="score-sub">${correct}/${total}</div></div>
+      <h2 style="margin-bottom:7px">${msg}</h2>
+      <p style="margin-bottom:18px;color:#777;font-size:.83rem">Tiempo: ${tm}m ${ts}s · Respondidas: ${answered}/${total}</p>
+      <div class="stats-grid">
+        <div class="stat-card stat-correct"><div class="n">${correct}</div><div class="l">✅ Correctas</div></div>
+        <div class="stat-card stat-wrong"><div class="n">${wrong}</div><div class="l">❌ Incorrectas</div></div>
+        <div class="stat-card stat-skip"><div class="n">${skipped}</div><div class="l">⏭️ Saltadas</div></div>
+      </div>
+      ${wb}
+      <div style="text-align:left;margin-bottom:22px">
+        <h3 style="font-size:.87rem;font-weight:700;color:#444;margin-bottom:9px">Desempeño por área</h3>
+        ${rows}
+      </div>
+      <div style="text-align:left;margin-bottom:22px">
+        <h3 style="font-size:.87rem;font-weight:700;color:#444;margin-bottom:9px">Desempeño por tipo de reactivo</h3>
+        ${typeRows}
+      </div>
+      <div style="display:flex;gap:9px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary btn-lg" onclick="reviewExam()">Revisar con explicaciones</button>
+        <button class="btn btn-secondary btn-lg" onclick="location.reload()">🔀 Nuevo diagnóstico</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('resultsScreen').classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+function reviewExam() {
+  document.getElementById('resultsScreen').classList.add('hidden');
+  document.getElementById('examScreen').classList.remove('hidden');
+  document.getElementById('navBar').classList.remove('hidden');
+  revealed = revealed.map(() => true);
+  renderQuestion(0);
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
