@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Simulacro V3 Avanzado – Subdirección de Resoluciones y Normatividad</title>
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Segoe UI',sans-serif; background:#fff0f6; color:#222; min-height:100dvh; overflow-x:hidden; }
+
+.header { background:linear-gradient(135deg,#880e4f,#e91e8c); color:white; padding:10px 14px; display:flex; align-items:center; gap:10px; box-shadow:0 2px 8px rgba(0,0,0,.2); position:sticky; top:0; z-index:200; }
+.header-logo { font-size:1.35rem; flex-shrink:0; }
+.header-text { flex:1; min-width:0; }
+.header h1 { font-size:.86rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.header p  { font-size:.6rem; opacity:.82; margin-top:1px; }
+.header-right { flex-shrink:0; text-align:right; }
+.timer { font-size:1.45rem; font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:.5px; line-height:1; }
+.t-lbl { font-size:.55rem; opacity:.65; margin-top:1px; }
+.timer.warning { color:#ffe082; }
+.timer.danger  { color:#ff6b6b; animation:pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.45} }
+.progress-wrap { background:#f8bbd0; height:3px; }
+.progress-bar  { height:3px; background:#fff; transition:width .4s; }
+
+.main { padding:12px 12px 80px; max-width:600px; margin:0 auto; }
+
+.start-screen { background:white; border-radius:14px; padding:22px 16px; box-shadow:0 2px 12px rgba(0,0,0,.08); margin-top:14px; text-align:center; }
+.start-screen h2 { font-size:1.2rem; color:#880e4f; margin-bottom:10px; line-height:1.3; }
+.info-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin:15px 0; }
+.info-card { background:#fce4ec; border-radius:10px; padding:11px 8px; }
+.info-card .num { font-size:1.5rem; font-weight:800; color:#880e4f; }
+.info-card .lbl { font-size:.72rem; color:#666; margin-top:2px; }
+.topic-section { text-align:left; margin:13px 0; }
+.topic-section-title { font-size:.71rem; font-weight:800; color:#880e4f; text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px; padding-left:8px; border-left:3px solid #e91e8c; }
+.topic-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:10px; }
+.topic-pill { background:#fce4ec; border-radius:7px; padding:6px 10px; font-size:.75rem; color:#880e4f; display:flex; justify-content:space-between; gap:6px; }
+.topic-pill .cnt { font-weight:800; flex-shrink:0; }
+.level-banner { background:linear-gradient(135deg,#4a148c,#880e4f); color:white; border-radius:10px; padding:10px 12px; margin:10px 0; font-size:.78rem; text-align:left; line-height:1.45; }
+.level-banner strong { color:#ffe082; }
+.formats-banner { background:#fff3e0; border-left:3px solid #ff9800; border-radius:8px; padding:9px 11px; margin:8px 0; font-size:.74rem; text-align:left; color:#5d4037; line-height:1.5; }
+.formats-banner strong { color:#e65100; }
+
+.question-card { background:white; border-radius:12px; padding:15px 13px; box-shadow:0 2px 10px rgba(0,0,0,.07); margin-bottom:12px; animation:fadeUp .25s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)} }
+.q-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:11px; flex-wrap:wrap; gap:5px; }
+.q-badge { font-size:.66rem; font-weight:700; padding:3px 9px; border-radius:20px; text-transform:uppercase; }
+.q-right { display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
+.q-num { color:#aaa; font-size:.75rem; }
+.q-type { font-size:.58rem; font-weight:700; padding:2px 7px; border-radius:10px; letter-spacing:.3px; }
+.q-type.seq { background:#e0f7fa; color:#006064; }
+.q-type.rel { background:#f3e5f5; color:#4a148c; }
+.q-type.cas { background:#fff3e0; color:#e65100; }
+.q-type.dir { background:#e8f5e9; color:#2e7d32; }
+.q-type.com { background:#efebe9; color:#5d4037; }
+
+.passage { background:#fff0f6; border-left:4px solid #e91e8c; padding:10px 12px; border-radius:0 8px 8px 0; margin-bottom:12px; font-size:.83rem; line-height:1.7; }
+.passage-label { font-size:.64rem; font-weight:700; color:#880e4f; text-transform:uppercase; margin-bottom:5px; }
+
+.question-text { font-size:.9rem; font-weight:600; line-height:1.5; margin-bottom:13px; }
+
+.listado { background:#fafafa; border:1px solid #e0e0e0; border-radius:9px; padding:11px 13px; margin-bottom:13px; font-size:.83rem; line-height:1.6; }
+.listado-title { font-size:.67rem; font-weight:700; color:#555; text-transform:uppercase; margin-bottom:7px; letter-spacing:.3px; }
+.listado ol, .listado ul { padding-left:22px; margin:0; }
+.listado li { margin-bottom:4px; }
+
+.rel-cols { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.rel-col { background:#fafafa; border:1px solid #e0e0e0; border-radius:9px; padding:9px 10px; }
+.rel-col-title { font-size:.66rem; font-weight:800; color:#880e4f; text-transform:uppercase; margin-bottom:6px; letter-spacing:.3px; }
+.rel-col ol { padding-left:18px; margin:0; font-size:.8rem; line-height:1.5; }
+.rel-col ul { padding-left:0; list-style:none; margin:0; font-size:.8rem; line-height:1.5; }
+.rel-col li { margin-bottom:5px; }
+
+.options { display:flex; flex-direction:column; gap:8px; }
+.option { display:flex; align-items:flex-start; gap:10px; padding:13px 12px; border:2px solid #e0e0e0; border-radius:10px; cursor:pointer; transition:border-color .13s,background .13s; font-size:.86rem; line-height:1.45; min-height:50px; }
+.option:active:not(.disabled) { border-color:#e91e8c; background:#fce4ec33; }
+.option.selected  { border-color:#e91e8c; background:#fce4ec55; }
+.option.correct   { border-color:#4caf50; background:#e8f5e9; }
+.option.incorrect { border-color:#f44336; background:#ffebee; }
+.option.disabled  { cursor:default; }
+.option-letter { width:26px; height:26px; border-radius:50%; background:#eee; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.75rem; flex-shrink:0; transition:background .13s,color .13s; }
+.option.selected  .option-letter { background:#e91e8c; color:white; }
+.option.correct   .option-letter { background:#4caf50; color:white; }
+.option.incorrect .option-letter { background:#f44336; color:white; }
+.opt-text { flex:1; }
+.opt-icon { flex-shrink:0; font-size:.9rem; }
+
+.explanation { margin-top:12px; padding:11px 12px; background:#fff0f6; border-radius:9px; border-left:4px solid #e91e8c; font-size:.81rem; line-height:1.65; display:none; }
+.explanation.show { display:block; }
+.explanation strong { color:#880e4f; }
+
+.ver-sol-wrap { text-align:center; margin-bottom:10px; }
+.btn-ver-sol { background:white; border:2px solid #e91e8c; color:#880e4f; padding:9px 20px; border-radius:9px; font-weight:700; font-size:.82rem; cursor:pointer; min-height:44px; transition:all .13s; }
+.btn-ver-sol:active { background:#fce4ec; }
+
+.btn { padding:10px 18px; border-radius:10px; border:none; font-size:.85rem; font-weight:700; cursor:pointer; transition:all .15s; min-height:44px; }
+.btn:active { transform:scale(.96); }
+.btn-primary   { background:linear-gradient(135deg,#880e4f,#e91e8c); color:white; }
+.btn-primary:active   { opacity:.88; }
+.btn-primary:disabled { opacity:.4; cursor:not-allowed; }
+.btn-secondary { background:#f0f0f0; color:#555; }
+.btn-secondary:active { background:#e0e0e0; }
+.btn-lg { padding:13px 26px; font-size:.92rem; border-radius:12px; }
+.btn-sm { padding:9px 15px; font-size:.8rem; min-height:40px; }
+
+.nav-bar { position:fixed; bottom:0; left:0; right:0; background:white; border-top:1px solid #e0e0e0; padding:8px 14px; padding-bottom:max(8px,env(safe-area-inset-bottom)); display:flex; justify-content:space-between; align-items:center; gap:8px; box-shadow:0 -2px 10px rgba(0,0,0,.07); z-index:200; }
+.nav-info { font-size:.77rem; color:#888; line-height:1.4; }
+.nav-info span { color:#880e4f; font-weight:700; }
+.nav-btns { display:flex; gap:7px; flex-shrink:0; }
+
+.results-screen { background:white; border-radius:14px; padding:24px 16px; box-shadow:0 2px 12px rgba(0,0,0,.08); margin-top:14px; text-align:center; }
+.score-circle { width:108px; height:108px; border-radius:50%; margin:0 auto 16px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:1.85rem; font-weight:900; color:white; }
+.score-good { background:linear-gradient(135deg,#4caf50,#81c784); }
+.score-mid  { background:linear-gradient(135deg,#ff9800,#ffb74d); }
+.score-low  { background:linear-gradient(135deg,#f44336,#e57373); }
+.score-sub  { font-size:.72rem; font-weight:600; opacity:.9; margin-top:2px; }
+.stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin:14px 0; }
+.stat-card { border-radius:10px; padding:12px 6px; }
+.stat-card .n { font-size:1.4rem; font-weight:800; }
+.stat-card .l { font-size:.7rem; margin-top:2px; }
+.stat-correct { background:#e8f5e9; color:#2e7d32; }
+.stat-wrong   { background:#ffebee; color:#c62828; }
+.stat-skip    { background:#fff8e1; color:#f57f17; }
+
+.area-row { display:grid; grid-template-columns:1fr 60px 42px; gap:7px; align-items:center; margin-bottom:9px; }
+.area-name { font-size:.78rem; font-weight:600; color:#333; text-align:left; }
+.area-bar-wrap { background:#f0f0f0; border-radius:10px; height:8px; overflow:hidden; }
+.area-bar { height:100%; border-radius:10px; transition:width .6s; }
+.area-pct { font-size:.78rem; font-weight:700; text-align:right; }
+
+.weak-banner { background:linear-gradient(135deg,#fff8e1,#ffecb3); border-left:4px solid #f9a825; padding:12px 14px; border-radius:9px; margin:13px 0; text-align:left; }
+.weak-banner h4 { color:#e65100; margin-bottom:6px; font-size:.87rem; }
+.weak-banner p  { font-size:.77rem; color:#555; margin-bottom:8px; line-height:1.5; }
+.weak-tags { display:flex; flex-wrap:wrap; gap:5px; }
+.weak-tag { background:white; color:#e65100; padding:4px 10px; border-radius:15px; font-size:.72rem; border:1px solid #ffb74d; font-weight:600; }
+
+.version-badge { background:linear-gradient(135deg,#ff9800,#ffa726); color:white; font-weight:800; padding:6px 14px; border-radius:20px; font-size:.72rem; display:inline-block; margin-bottom:10px; letter-spacing:.5px; box-shadow:0 2px 6px rgba(255,152,0,.35); }
+
+.hidden { display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">⚖️</div>
+  <div class="header-text">
+    <h1>Subdirección de Resoluciones y Normatividad</h1>
+    <p>UTF · Fiscalización · Sancionadores · 🔀 Aleatorio</p>
+  </div>
+  <div class="header-right">
+    <div class="timer" id="timer">68:00</div>
+    <div class="t-lbl">tiempo restante</div>
+  </div>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+
+<div class="main">
+  <div class="start-screen" id="startScreen">
+    <div class="version-badge">🏷️ SIMULACRO V3 · AVANZADO</div>
+    <h2>⚖️ Subdirección de Resoluciones y Normatividad</h2>
+    <p style="background:#fce4ec;border-radius:10px;padding:10px;color:#880e4f;font-weight:600;margin-bottom:13px;font-size:.81rem">
+      🎯 Unidad Técnica de Fiscalización (UTF)
+    </p>
+    <div class="level-banner">
+      <strong>🔴 NIVEL AVANZADO · V3</strong> — Respuestas concisas con <strong>distractores de máxima sofisticación</strong>: cifras, plazos y competencias muy próximos al correcto. Incluye reactivos de <strong>completamiento</strong>, directos, casos, relación y secuencia.
+    </div>
+    <div class="formats-banner">
+      <strong>📝 FORMATOS INCLUIDOS:</strong><br>
+      🟢 <strong>Directo:</strong> pregunta con 3 opciones sustantivas<br>
+      🔵 <strong>Secuencia:</strong> ordena elementos según un criterio<br>
+      🟣 <strong>Relación:</strong> vincula 2 columnas de conceptos<br>
+      🟠 <strong>Caso práctico:</strong> escenario y decisión institucional<br>
+      🟤 <strong>Completamiento:</strong> enunciado con espacio en blanco
+    </div>
+    <div class="info-grid">
+      <div class="info-card"><div class="num">55</div><div class="lbl">Preguntas</div></div>
+      <div class="info-card"><div class="num">68</div><div class="lbl">Minutos</div></div>
+      <div class="info-card"><div class="num">5</div><div class="lbl">Áreas</div></div>
+    </div>
+    <div class="topic-section">
+      <div class="topic-section-title">🏛️ 1. Autoridades en materia de fiscalización (1 pregunta)</div>
+      <div class="topic-grid">
+        <div class="topic-pill"><span>1.1 Distribución de competencias</span><span class="cnt">1</span></div>
+      </div>
+      <div class="topic-section-title">👥 2. Sujetos obligados (6 preguntas)</div>
+      <div class="topic-grid">
+        <div class="topic-pill"><span>2.1 Partidos políticos</span><span class="cnt">1</span></div>
+        <div class="topic-pill"><span>2.2 Precandidaturas e indep.</span><span class="cnt">1</span></div>
+        <div class="topic-pill"><span>2.3 Agrupaciones políticas</span><span class="cnt">1</span></div>
+        <div class="topic-pill"><span>2.4 Organizaciones ciudadanas</span><span class="cnt">1</span></div>
+        <div class="topic-pill"><span>2.5 Observación electoral</span><span class="cnt">1</span></div>
+        <div class="topic-pill"><span>2.6 Candidaturas Poder Judicial</span><span class="cnt">1</span></div>
+      </div>
+      <div class="topic-section-title">💰 3. Origen y aplicación de los recursos (11 preguntas)</div>
+      <div class="topic-grid">
+        <div class="topic-pill"><span>3.1 Financiamiento público</span><span class="cnt">2</span></div>
+        <div class="topic-pill"><span>3.2 Financiamiento privado</span><span class="cnt">3</span></div>
+        <div class="topic-pill"><span>3.3 Proceso electoral</span><span class="cnt">5</span></div>
+        <div class="topic-pill"><span>3.4 Actividades ordinarias</span><span class="cnt">1</span></div>
+      </div>
+      <div class="topic-section-title">⚖️ 4. Resoluciones y acuerdos (33 preguntas)</div>
+      <div class="topic-grid">
+        <div class="topic-pill"><span>4.1 Procedimientos sancionadores</span><span class="cnt">30</span></div>
+        <div class="topic-pill"><span>4.2 Consultas en fiscalización</span><span class="cnt">3</span></div>
+      </div>
+      <div class="topic-section-title">📊 5. Rendición de cuentas (4 preguntas)</div>
+      <div class="topic-grid">
+        <div class="topic-pill"><span>5.1 Informes</span><span class="cnt">2</span></div>
+        <div class="topic-pill"><span>5.2 Infracciones</span><span class="cnt">2</span></div>
+      </div>
+    </div>
+    <div style="background:#f5f5f5;border-radius:9px;padding:10px 12px;margin-bottom:14px;font-size:.7rem;color:#555;text-align:left;line-height:1.6">
+      <strong style="color:#880e4f">📚 BIBLIOGRAFÍA OFICIAL (guía INE)</strong><br>
+      • LGIPE — Ley General de Instituciones y Procedimientos Electorales<br>
+      • LGPP — Ley General de Partidos Políticos<br>
+      • Reglamento de Fiscalización (RF)<br>
+      • Reglamento de Procedimientos Sancionadores en Materia de Fiscalización (RPSMF)<br>
+      • Reglamento de Elecciones (INE)<br>
+      • INE/CG54/2025 — Lineamientos para la Fiscalización de Procesos Electorales del Poder Judicial<br>
+      • Acuerdos del Consejo General sobre topes de gastos y límites de financiamiento
+    </div>
+    <button class="btn btn-primary btn-lg" style="width:100%" onclick="startExam()">Comenzar simulacro →</button>
+  </div>
+
+  <div id="examScreen" class="hidden"></div>
+  <div id="resultsScreen" class="hidden"></div>
+</div>
+
+<div class="nav-bar hidden" id="navBar">
+  <div class="nav-info">
+    Preg. <span id="navCurrent">1</span> de <span id="navTotal">55</span>
+  </div>
+  <div class="nav-btns">
+    <button class="btn btn-secondary btn-sm" id="btnPrev" onclick="prevQ()">← Ant.</button>
+    <button class="btn btn-primary  btn-sm" id="btnNext" onclick="nextQ()">Sig. →</button>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   BANCO DE PREGUNTAS — SUBDIRECCIÓN DE RESOLUCIONES Y NORMATIVIDAD
+   Distribución oficial (Guía INE, 40 preguntas):
+     1.1 Distribución de competencias                         1
+     2.1 Partidos políticos                                   1
+     2.2 Precandidaturas, aspirantes y cand. independientes   1
+     2.3 Agrupaciones políticas nacionales                    1
+     2.4 Organizaciones de ciudadanos                         1
+     2.5 Organizaciones de observación electoral              1
+     2.6 Personas candidatas a cargos del Poder Judicial      1
+     3.1 Financiamiento público                               2
+     3.2 Financiamiento privado                               3
+     3.3 Proceso electoral                                    5
+     3.4 Actividades ordinarias permanentes                   1
+     4.1 Procedimientos administrativos sancionadores        15
+     4.2 Consultas en materia de fiscalización                3
+     5.1 Informes                                             2
+     5.2 Infracciones                                         2
+                                                 TOTAL:     40
+═══════════════════════════════════════════════════════════════ */
+const Q = [
+
+  /* ══════════════════════════════════
+     1.1  DISTRIBUCIÓN DE COMPETENCIAS  (1)
+  ══════════════════════════════════ */
+  { sa:"1.1", sal:"Distribución de competencias", area:"Autoridades en fiscalización", t:"com",
+    q:"Complete el enunciado: La ________ es el órgano con autonomía de gestión que tiene a su cargo la recepción y revisión integral de los informes que presentan los sujetos obligados, así como la investigación de las quejas y procedimientos oficiosos; sus proyectos son sometidos a la ________ y, en definitiva, a la aprobación del ________.",
+    o:["Unidad Técnica de Fiscalización · Comisión de Fiscalización · Consejo General",
+       "Comisión de Fiscalización · Junta General Ejecutiva · Consejo General",
+       "Unidad Técnica de Fiscalización · Secretaría Ejecutiva · Comisión de Fiscalización"],
+    c:0,
+    ex:"Arts. 192, 196 y 199 LGIPE. La UTF instruye, la Comisión de Fiscalización supervisa y propone, el Consejo General aprueba. La Junta General Ejecutiva y la Secretaría Ejecutiva tienen funciones operativas distintas, no en la cadena resolutiva de fiscalización." },
+
+
+  /* ══════════════════════════════════
+     2.1  PARTIDOS POLÍTICOS  (1)
+  ══════════════════════════════════ */
+  { sa:"2.1", sal:"Partidos políticos", area:"Sujetos obligados", t:"dir",
+    q:"Un partido político que recibió su registro local (en una entidad federativa) y no cuenta con registro nacional, ¿a qué autoridad rinde cuentas en materia de fiscalización?",
+    o:["Al Organismo Público Local Electoral (OPLE) correspondiente, con autonomía plena respecto del INE",
+       "Al INE a través de la UTF; los OPLE auxilian en la sustanciación pero la fiscalización es competencia del INE",
+       "A la Auditoría Superior de la entidad federativa donde obtuvo su registro local"],
+    c:1,
+    ex:"Desde la reforma 2014 la fiscalización es atribución del INE sobre partidos nacionales y locales (art. 41 CPEUM). Los OPLE sólo auxilian. La ASF local no tiene competencia electoral; fiscaliza recursos públicos en otro sentido." },
+
+
+  /* ══════════════════════════════════
+     2.2  PRECANDIDATURAS, ASPIRANTES Y CANDIDATURAS INDEPENDIENTES  (1)
+  ══════════════════════════════════ */
+  { sa:"2.2", sal:"Precandidaturas e indep.", area:"Sujetos obligados", t:"cas",
+    p:"Una persona precandidata única (sin contendiente interno) por su partido realiza actos proselitistas ante la militancia. Su partido sostiene que por ser precandidata única, no hay obligación de reportar gastos de precampaña.",
+    pt:"Caso práctico · Precandidatura única",
+    q:"¿Cuál es el análisis jurídico correcto?",
+    o:["La precandidatura única carece de obligación de reportar, pues no hay contienda interna que fiscalizar",
+       "La obligación de reportar subsiste con independencia de que la precandidatura sea única o disputada; el bien jurídico tutelado no es sólo la equidad intrapartidaria sino también el control del origen y destino de los recursos",
+       "Sólo debe reportar si sus gastos superan el 50% del tope autorizado para precampaña"],
+    c:1,
+    ex:"Criterio reiterado del TEPJF: el carácter único de la precandidatura no exenta de reportar. La fiscalización busca también evitar actos anticipados de campaña y controlar el origen de los recursos. El umbral del 50% no existe en la norma." },
+
+
+  /* ══════════════════════════════════
+     2.3  AGRUPACIONES POLÍTICAS NACIONALES  (1)
+  ══════════════════════════════════ */
+  { sa:"2.3", sal:"Agrupaciones políticas", area:"Sujetos obligados", t:"com",
+    q:"Complete: Las agrupaciones políticas nacionales son formas de asociación ciudadana que coadyuvan al desarrollo de la vida democrática y de la cultura política, así como a la creación de una opinión pública mejor informada; y sólo podrán participar en procesos electorales federales mediante ________ con un partido político.",
+    o:["convenios de participación",
+       "acuerdos de coalición",
+       "candidaturas comunes"],
+    c:0,
+    ex:"Art. 22 LGPP. Las APN se suman a procesos sólo mediante convenios de participación con un partido. Las 'coaliciones' y 'candidaturas comunes' son figuras exclusivas entre partidos políticos, no aplicables a APN." },
+
+
+  /* ══════════════════════════════════
+     2.4  ORGANIZACIONES DE CIUDADANOS  (1)
+  ══════════════════════════════════ */
+  { sa:"2.4", sal:"Organizaciones ciudadanas", area:"Sujetos obligados", t:"dir",
+    q:"Durante la etapa de constitución de un partido político nacional, una organización de ciudadanos realiza asambleas y gastos de difusión. Respecto a su fiscalización:",
+    o:["Está sujeta a informes mensuales; el incumplimiento puede derivar en la pérdida del derecho a obtener el registro",
+       "Sólo rinde cuentas al momento de presentar su solicitud de registro, en una declaración global de todo el periodo",
+       "Está sujeta a fiscalización trimestral con los mismos plazos de los partidos con registro vigente"],
+    c:0,
+    ex:"Lineamientos INE para organizaciones en vías de registro: informes mensuales del periodo de constitución. El incumplimiento se valora como factor para el registro. El régimen es específico, no equiparable al trimestral de partidos ni a una declaración final única." },
+
+
+  /* ══════════════════════════════════
+     2.5  ORGANIZACIONES DE OBSERVACIÓN ELECTORAL  (1)
+  ══════════════════════════════════ */
+  { sa:"2.5", sal:"Observación electoral", area:"Sujetos obligados", t:"dir",
+    q:"Una organización de observación electoral recibió financiamiento de una fundación extranjera para sus actividades de observación del proceso. Este hecho:",
+    o:["Es válido siempre que la fundación no sea gubernamental y los recursos se reporten oportunamente",
+       "Configura ingreso de fuente prohibida: las aportaciones de personas físicas o morales extranjeras están prohibidas también para las organizaciones de observación",
+       "Requiere autorización previa de la Secretaría de Relaciones Exteriores pero no vulnera la normatividad electoral"],
+    c:1,
+    ex:"La prohibición de aportaciones extranjeras alcanza a todos los sujetos obligados, incluidas las organizaciones de observación (LGIPE y RF). El carácter no gubernamental no levanta la prohibición. La SRE no autoriza financiamiento político-electoral." },
+
+
+  /* ══════════════════════════════════
+     2.6  PERSONAS CANDIDATAS A CARGOS DEL PODER JUDICIAL  (1)
+  ══════════════════════════════════ */
+  { sa:"2.6", sal:"Candidaturas Poder Judicial", area:"Sujetos obligados", t:"dir",
+    q:"Conforme a los Lineamientos INE/CG54/2025, las quejas y procedimientos oficiosos relacionados con el origen, monto, destino y aplicación de los recursos de candidaturas al Poder Judicial:",
+    o:["Se tramitan por vía del Procedimiento Especial Sancionador (PES) ante la Sala Regional Especializada",
+       "Se tramitan por vía del Procedimiento Administrativo Sancionador en materia de Fiscalización (PASF) y los resuelve el Consejo General del INE",
+       "Son competencia exclusiva del Consejo de la Judicatura Federal tratándose de candidaturas al ámbito federal"],
+    c:1,
+    ex:"Art. 48 Lineamientos INE/CG54/2025: vía PASF, resolución del Consejo General. El PES tiene ámbito distinto (actos contrarios a la contienda). El Consejo de la Judicatura no tiene competencia en materia electoral." },
+
+
+  /* ══════════════════════════════════
+     3.1  FINANCIAMIENTO PÚBLICO  (2)
+  ══════════════════════════════════ */
+  { sa:"3.1", sal:"Financiamiento público", area:"Origen y aplicación", t:"com",
+    q:"Complete: El financiamiento público para actividades ordinarias permanentes se calcula multiplicando el número total de personas inscritas en el ________ por el ________ del valor diario de la UMA.",
+    o:["Padrón Electoral · 65%",
+       "Lista Nominal de Electores · 65%",
+       "Padrón Electoral · 50%"],
+    c:0,
+    ex:"Art. 51 LGPP: base es el Padrón Electoral (no la Lista Nominal, que es subconjunto). Porcentaje: 65% (no 50%). Confundir Padrón con Lista Nominal y el 65% con otros porcentajes son errores frecuentes." },
+
+  { sa:"3.1", sal:"Financiamiento público", area:"Origen y aplicación", t:"dir",
+    q:"En el año de la elección presidencial, el financiamiento público para gastos de campaña de cada partido equivale a:",
+    o:["El 30% del financiamiento público ordinario del año de la elección",
+       "El 50% del financiamiento público ordinario del año de la elección",
+       "El 100% del financiamiento público ordinario del año de la elección"],
+    c:1,
+    ex:"Art. 51 LGPP: 50% del ordinario cuando es elección presidencial. El 30% aplica para elecciones intermedias (sólo diputaciones). El 100% no figura en la norma. Confundir ambos porcentajes es error recurrente." },
+
+
+  /* ══════════════════════════════════
+     3.2  FINANCIAMIENTO PRIVADO  (3)
+  ══════════════════════════════════ */
+  { sa:"3.2", sal:"Financiamiento privado", area:"Origen y aplicación", t:"dir",
+    q:"El límite individual anual de aportaciones de una persona simpatizante a un partido político está tope por:",
+    o:["El 0.5% del tope de gasto de la elección presidencial inmediata anterior",
+       "El 0.05% del financiamiento público para actividades ordinarias del año correspondiente",
+       "Una cantidad fija en salarios mínimos general que fija anualmente el Congreso de la Unión"],
+    c:0,
+    ex:"Art. 56 LGPP: el límite individual por aportante simpatizante es el 0.5% del tope de campaña presidencial inmediata anterior. No se calcula sobre el ordinario anual (ese es el tope global para aportaciones, art. 56 también). El Congreso no fija estos límites; los fija la LGPP y los acuerdos del Consejo General." },
+
+  { sa:"3.2", sal:"Financiamiento privado", area:"Origen y aplicación", t:"rel",
+    relTitle:"Relacione cada conducta con su régimen jurídico",
+    colA:{ title:"Conducta", items:[
+      "Aportación de persona moral nacional",
+      "Aportación en efectivo mayor al permitido sin uso del sistema bancario",
+      "Aportación anónima en caja recolectora del partido",
+      "Aportación de militante en cuotas ordinarias"] },
+    colB:{ title:"Régimen", items:[
+      "a) Fuente prohibida por naturaleza del aportante",
+      "b) Prohibida por violación al principio de bancarización",
+      "c) Prohibida por incumplir identificación del aportante",
+      "d) Permitida, sujeta a registro y documentación",
+      "e) Permitida sin necesidad de registro"] },
+    q:"Seleccione la opción correcta:",
+    o:["1a, 2b, 3c, 4d",
+       "1d, 2a, 3b, 4e",
+       "1a, 2c, 3b, 4d"],
+    c:0,
+    ex:"(1) Persona moral → prohibida por naturaleza (a). (2) Efectivo sobre umbral fuera del sistema bancario → prohibida por bancarización (b). (3) Anónima → prohibida por no identificar (c). (4) Cuota de militante → permitida y registrada (d). La opción 'e' es distractor: aun las cuotas requieren registro." },
+
+  { sa:"3.2", sal:"Financiamiento privado", area:"Origen y aplicación", t:"dir",
+    q:"¿Qué porcentaje del financiamiento público ordinario anual establece la ley como tope máximo para las aportaciones de militantes en conjunto?",
+    o:["El 2% del financiamiento público ordinario anual del partido",
+       "El 10% del financiamiento público ordinario anual del partido",
+       "El equivalente a los topes del financiamiento público al sostenimiento de actividades ordinarias"],
+    c:1,
+    ex:"Art. 56 LGPP: 10% del ordinario anual es el tope global de aportaciones de militantes. El 2% corresponde a actividades específicas (otro régimen distinto). La opción que equipara los topes es imprecisa: el privado no puede rebasar al público total, pero el tope específico de militantes es el 10%." },
+
+
+  /* ══════════════════════════════════
+     3.3  PROCESO ELECTORAL  (5)
+  ══════════════════════════════════ */
+  { sa:"3.3", sal:"Proceso electoral", area:"Origen y aplicación", t:"dir",
+    q:"El plazo para la presentación del informe de campaña correspondiente a la elección de diputaciones federales es de:",
+    o:["10 días contados a partir del día siguiente al de la conclusión de la campaña",
+       "30 días contados a partir del día de la jornada electoral",
+       "60 días contados a partir de la calificación de la elección"],
+    c:1,
+    ex:"LGPP y RF establecen 30 días a partir de la jornada electoral. Los 10 días corresponden al informe de precampaña desde su conclusión. Los 60 días desde la calificación no corresponden a ningún plazo vigente; confunden con esquemas previos a la reforma 2014." },
+
+  { sa:"3.3", sal:"Proceso electoral", area:"Origen y aplicación", t:"seq",
+    listadoTitle:"Etapas para determinar si un rebase de tope es determinante para la nulidad de la elección (desordenadas):",
+    listado:[
+      "El TEPJF analiza la determinancia cuantitativa (porcentaje de rebase) y cualitativa (ventaja competitiva)",
+      "El Consejo General del INE aprueba la resolución que fija el monto efectivamente erogado y declara el rebase",
+      "La resolución del INE es impugnada en vía de recurso de apelación o juicio de revisión constitucional",
+      "El Consejo General o el Tribunal declara, en su caso, la nulidad de la elección al resolver el medio de impugnación pertinente",
+      "La UTF cuantifica el gasto agregado (reportado más no reportado) y contrasta con el tope autorizado"],
+    q:"¿Cuál es el orden correcto?",
+    o:["5, 2, 3, 1, 4",
+       "5, 3, 2, 1, 4",
+       "2, 5, 1, 3, 4"],
+    c:0,
+    ex:"(5) Cuantificación UTF → (2) Resolución del Consejo fija el rebase → (3) Impugnación → (1) Análisis de determinancia por TEPJF → (4) Declaración de nulidad, en su caso. El TEPJF no analiza determinancia antes de que exista resolución firme del INE." },
+
+  { sa:"3.3", sal:"Proceso electoral", area:"Origen y aplicación", t:"dir",
+    q:"Los 'gastos sin objeto partidista' detectados en la revisión del informe:",
+    o:["Se suman automáticamente al tope de campaña del proceso electoral inmediato posterior",
+       "Se observan y se sancionan durante la fiscalización de los informes correspondientes; además se puede dar vista a otras autoridades por posibles conductas diversas",
+       "No tienen consecuencia jurídica si el partido acredita que fueron erogados con financiamiento privado"],
+    c:1,
+    ex:"Conforme al RF, los gastos sin objeto partidista se sancionan en su propio procedimiento. No se transfieren al tope siguiente. El origen privado no neutraliza la infracción: el financiamiento, público o privado, debe aplicarse al objeto partidista." },
+
+  { sa:"3.3", sal:"Proceso electoral", area:"Origen y aplicación", t:"cas",
+    p:"La UTF detecta que una candidatura reportó gastos con facturas emitidas por un proveedor que no está inscrito en el Registro Nacional de Proveedores (RNP), siendo obligatoria dicha inscripción para contrataciones superiores al umbral fijado por el Consejo General.",
+    pt:"Caso práctico · Registro Nacional de Proveedores",
+    q:"¿Cuál es la consecuencia fiscalizadora?",
+    o:["No hay consecuencia si las facturas son auténticas y el servicio efectivamente se prestó",
+       "Se configura una infracción por contratar con proveedor no registrado; el gasto se tiene por acreditado y se sanciona la conducta formal, sin invalidar el gasto",
+       "La factura se tiene por inexistente y el gasto se considera no reportado por el total"],
+    c:1,
+    ex:"El RNP es instrumento de trazabilidad: su omisión es infracción formal sancionable, pero no invalida el gasto real. Tratarlo como 'no reportado' sería doble sanción y contradictorio con la realidad material de la erogación. La autenticidad de la factura no subsana el incumplimiento del registro." },
+
+  { sa:"3.3", sal:"Proceso electoral", area:"Origen y aplicación", t:"dir",
+    q:"La fiscalización concurrente, derivada de la reforma electoral 2014, implica que:",
+    o:["Los resultados de la fiscalización deben estar aprobados antes de la calificación de la elección",
+       "La fiscalización se realiza de forma simultánea por el INE y por el TEPJF para acelerar los procedimientos",
+       "Los informes de campaña se revisan únicamente después de concluido el proceso electoral para no interferir con la contienda"],
+    c:0,
+    ex:"La concurrencia significa fiscalizar al tiempo del proceso para dictaminar antes de la calificación (cambio paradigmático de la reforma 2014). El TEPJF no fiscaliza: conoce impugnaciones. Revisar 'después del proceso' describe el modelo previo a la reforma, superado." },
+
+
+  /* ══════════════════════════════════
+     3.4  ACTIVIDADES ORDINARIAS PERMANENTES  (1)
+  ══════════════════════════════════ */
+  { sa:"3.4", sal:"Actividades ordinarias", area:"Origen y aplicación", t:"dir",
+    q:"Un partido destina en un ejercicio anual sólo el 1.5% de su financiamiento ordinario a actividades específicas (educación, capacitación política, investigación, tareas editoriales). Esta conducta configura:",
+    o:["Ningún ilícito, pues el 2% opera como meta orientadora y no como obligación vinculante",
+       "Infracción por incumplimiento del porcentaje mínimo legal del 2% destinado a actividades específicas",
+       "Infracción sólo si el partido también incumplió el 3% destinado al liderazgo político de las mujeres"],
+    c:1,
+    ex:"Art. 51 LGPP: el 2% es mínimo legal obligatorio, no meta orientadora. La infracción se configura de forma autónoma al incumplimiento del 3% para liderazgo de mujeres; son dos obligaciones independientes y acumulables." },
+
+
+  /* ══════════════════════════════════
+     4.1  PROCEDIMIENTOS ADMINISTRATIVOS SANCIONADORES EN MATERIA DE FISCALIZACIÓN  (15)
+  ══════════════════════════════════ */
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"com",
+    q:"Complete: La ________ es el acto por el cual una persona física o moral hace del conocimiento del INE hechos presuntamente violatorios de la normatividad electoral en materia de fiscalización; el ________ lo inicia la propia autoridad cuando tiene conocimiento de hechos que pudieran configurar infracción y cuenta con elementos suficientes que generen indicios.",
+    o:["denuncia · procedimiento ordinario sancionador",
+       "queja · procedimiento oficioso",
+       "vista · procedimiento especial sancionador"],
+    c:1,
+    ex:"RPSMF: 'queja' y 'procedimiento oficioso'. 'Denuncia' es término genérico; el específico en fiscalización es 'queja'. 'Vista' es el traslado entre autoridades, no una vía de inicio. El PES pertenece a otra materia (contencioso electoral)." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Los procedimientos oficiosos en materia de fiscalización cuya naturaleza NO deriva de la revisión de informes prescriben en:",
+    o:["1 año desde los hechos presuntamente infractores",
+       "3 años desde los hechos presuntamente infractores",
+       "5 años desde los hechos presuntamente infractores"],
+    c:1,
+    ex:"Art. 26 RPSMF: 3 años para oficiosos no derivados de revisión de informes. El año es muy corto e insuficiente para integrar expedientes complejos. Los 5 años corresponden a plazos de otras materias (fiscal federal), no al procedimiento electoral." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Respecto del emplazamiento al sujeto obligado en el procedimiento de queja, el plazo para contestar es:",
+    o:["48 horas improrrogables contadas a partir de la notificación",
+       "5 días hábiles prorrogables por causa justificada",
+       "48 horas hábiles prorrogables cuando así lo solicite el denunciado por escrito"],
+    c:0,
+    ex:"Art. 41 RPSMF: 48 horas improrrogables (naturales, no hábiles; sin posibilidad de prórroga). El distractor sobre 'hábiles prorrogables' es sofisticado: añade condiciones que suenan razonables pero son contrarias a la norma." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"La prueba pericial en el procedimiento sancionador en materia de fiscalización:",
+    o:["Es siempre admisible con independencia del tipo de procedimiento",
+       "Es admisible siempre y cuando el procedimiento no esté vinculado al proceso electoral y a sus resultados",
+       "Está prohibida expresamente en todos los casos por su lentitud"],
+    c:1,
+    ex:"Art. 15 RPSMF: la pericial es admisible sólo cuando el procedimiento no está vinculado a un proceso electoral, dada la exigencia de celeridad de la fiscalización concurrente. No está prohibida en términos absolutos, pero tampoco siempre admisible." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"cas",
+    p:"La UTF recibe una queja por presunta aportación de ente público prohibido. El quejoso es un partido político nacional. En la contestación, el denunciado argumenta que el quejoso 'carece de interés jurídico para promover'.",
+    pt:"Caso práctico · Legitimación en la queja",
+    q:"¿Cuál es el análisis correcto?",
+    o:["El argumento es fundado: sólo las personas directamente afectadas tienen legitimación para promover quejas",
+       "El argumento es infundado: en materia de fiscalización la queja puede presentarla cualquier persona física o moral, partido, OPLE u otra autoridad, sin necesidad de acreditar interés jurídico personal y directo",
+       "El argumento debe analizarse caso por caso según la gravedad de los hechos denunciados"],
+    c:1,
+    ex:"RPSMF: legitimación amplia en materia sancionadora electoral. El interés jurídico-directo es propio del juicio ciudadano y otros medios de defensa, no de la queja en fiscalización, que tutela un interés público tamizado por el INE." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"La determinación del desechamiento de un escrito de queja en materia de fiscalización:",
+    o:["La emite directamente la UTF a través de acuerdo de la persona Titular",
+       "La propone la UTF pero la aprueba el Consejo General; la Sala Superior del TEPJF dejó sin efectos la atribución de la UTF para desechar",
+       "La emite la Comisión de Fiscalización con carácter firme e inimpugnable"],
+    c:1,
+    ex:"SUP-RAP-202/2023: la facultad de desechar está reservada por la LGIPE al Consejo General. La UTF puede elaborar el proyecto pero no emitirlo en definitiva. La Comisión tampoco tiene esa facultad, y ninguna resolución del INE es inimpugnable." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"rel",
+    relTitle:"Relacione cada sentido de resolución con su supuesto típico",
+    colA:{ title:"Sentido", items:[
+      "Fundada",
+      "Infundada",
+      "Desechamiento",
+      "Sobreseimiento"] },
+    colB:{ title:"Supuesto", items:[
+      "a) Se acredita la infracción y procede imponer sanción",
+      "b) No se acredita la conducta o no constituye infracción",
+      "c) Notoria improcedencia detectada al inicio (antes de admitir)",
+      "d) Causa sobreviniente después de la admisión que impide continuar",
+      "e) Revocación por el TEPJF en vía de apelación"] },
+    q:"Seleccione la opción correcta:",
+    o:["1a, 2b, 3c, 4d",
+       "1b, 2a, 3d, 4c",
+       "1a, 2e, 3c, 4d"],
+    c:0,
+    ex:"Cada sentido tiene supuesto propio: fundada (se acredita), infundada (no se acredita), desechamiento (improcedencia originaria), sobreseimiento (causa sobreviniente). La revocación por TEPJF es acto jurisdiccional ulterior, no un sentido del INE." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Respecto al método de valuación de operaciones cuando no hay monto determinable, el RF prevé que la UTF:",
+    o:["Debe utilizar exclusivamente el valor declarado por el proveedor, por ser el dato más cercano a la operación",
+       "Puede allegarse de información mediante el método de valuación establecido en el propio Reglamento (precios de referencia del RNP, cotizaciones, catálogos, precios reportados en procesos recientes)",
+       "Debe solicitar peritaje al Servicio de Administración Tributaria antes de cuantificar"],
+    c:1,
+    ex:"El RF dota a la UTF de metodología propia: múltiples fuentes objetivas. El valor del proveedor es un insumo, no el único criterio. El SAT no interviene en la valuación en fiscalización electoral; la metodología está autocontenida en el RF." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"com",
+    q:"Complete: Para la individualización de la sanción, una vez acreditada la falta y su imputación, la autoridad electoral debe valorar la gravedad, el dolo o culpa, las circunstancias de modo-tiempo-lugar, las condiciones del infractor, los medios de ejecución y la ________.",
+    o:["capacidad de pago del infractor al momento de la resolución",
+       "reincidencia en el incumplimiento de obligaciones",
+       "aceptación voluntaria de la falta por el denunciado"],
+    c:1,
+    ex:"Art. 458.5 LGIPE: reincidencia es uno de los factores expresos. La 'capacidad de pago' se integra dentro de 'condiciones del infractor' pero no figura como rubro autónomo. La 'aceptación voluntaria' no es factor legal; puede operar como atenuante pero no está listada." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"En la notificación electrónica vía SIF en materia de fiscalización, la fecha que se computa para efectos de plazos es:",
+    o:["La del envío por la UTF al módulo de notificaciones",
+       "La del acuse de recepción electrónica en el módulo del sujeto obligado",
+       "La del día hábil siguiente al envío, conforme a la regla supletoria del CFPC"],
+    c:1,
+    ex:"Reforma INE/CG523/2023: la fecha de notificación es la del acuse de recepción electrónica. No la del envío (que es acto unilateral de la autoridad). La regla del 'día hábil siguiente' del CFPC no aplica a la notificación electrónica regulada por el RPSMF." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"cas",
+    p:"Durante la instrucción, el denunciado ofrece como prueba superveniente un documento emitido por una autoridad federal después del plazo ordinario para ofrecer pruebas. El quejoso objeta la admisión argumentando extemporaneidad.",
+    pt:"Caso práctico · Prueba superveniente",
+    q:"¿Cuál es el análisis procesal correcto?",
+    o:["La objeción del quejoso es fundada: en ningún caso se admiten pruebas fuera de los plazos legales",
+       "La objeción es infundada si el documento surgió después del plazo o, siendo anterior, era desconocido para el oferente; la superveniente es la excepción expresa del RPSMF",
+       "La prueba se admite únicamente con autorización previa del Consejo General antes del cierre de la instrucción"],
+    c:1,
+    ex:"Art. 15 RPSMF: la superveniente es excepción expresa. Requiere acreditar o surgimiento posterior o desconocimiento previo. El Consejo General no autoriza pruebas; su admisión es acto de la autoridad instructora (UTF) conforme al reglamento." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Respecto al principio non bis in idem en materia sancionadora electoral:",
+    o:["Impide que una misma conducta sea objeto de sanción administrativa y, separadamente, de sanción penal ante la FGR",
+       "Impide que una misma conducta sea sancionada dos veces bajo la misma calificación jurídica y por la misma autoridad",
+       "Impide que se sancione al partido cuando ya se sancionó al candidato, por tratarse de sujetos distintos pero responsabilidad única"],
+    c:1,
+    ex:"Non bis in idem prohíbe doble sanción por la misma conducta bajo la misma calificación. Las esferas administrativa y penal son independientes (jurisprudencia de la SCJN y TEPJF). La sanción al partido y al candidato opera en sujetos y responsabilidades diferenciables." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"La sanción de 'supresión total de prerrogativas' prevista en el artículo 456 LGIPE:",
+    o:["Es automática cuando el partido reincide en cualquier infracción del mismo tipo",
+       "Procede por el periodo que señale la resolución, para infracciones particularmente graves",
+       "Sólo aplica a partidos con financiamiento público menor a diez millones de pesos anuales"],
+    c:1,
+    ex:"Art. 456 LGIPE: la supresión opera por el tiempo que fije la resolución. No es automática (exige resolución motivada). No se condiciona al monto del financiamiento; se vincula a la gravedad de la infracción." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"El dictamen consolidado que presenta la UTF al Consejo General, respecto de la revisión de informes:",
+    o:["Es un acto de mero trámite sin valor probatorio en procedimientos sancionadores posteriores",
+       "Constituye el documento técnico en el que se concentran los resultados de la revisión, los errores detectados, las aclaraciones y la valoración final, y es aprobado por el Consejo junto con la resolución",
+       "Sustituye a la resolución y hace innecesaria una decisión adicional del Consejo General"],
+    c:1,
+    ex:"El dictamen consolidado es el documento técnico; la resolución es el acto decisorio. Ambos se aprueban conjuntamente por el Consejo. El dictamen tiene valor probatorio en procedimientos posteriores (no es mero trámite) y no sustituye a la resolución (son complementarios)." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"La inspección ocular, como medio de prueba previsto en el RPSMF, requiere al personal actuante:",
+    o:["Acompañarse siempre de un fedatario público para su validez procesal",
+       "Asentar los medios de cercioramiento, descripción detallada de lo observado, características del lugar, tomas fotográficas o video y firma del funcionario; sin requerir necesariamente fedatario",
+       "Contar con orden escrita del Consejo General previa a la diligencia"],
+    c:1,
+    ex:"Art. 19 RPSMF: inspección por personal de la UTF, con los requisitos listados. El fedatario no es requisito (sólo se exige en figuras específicas como ratificación ante autoridad). No requiere orden previa del Consejo; la ordena la propia UTF." },
+
+
+  /* ══════════════════════════════════
+     4.2  CONSULTAS EN MATERIA DE FISCALIZACIÓN  (3)
+  ══════════════════════════════════ */
+  { sa:"4.2", sal:"Consultas en fiscalización", area:"Resoluciones y acuerdos", t:"dir",
+    q:"La respuesta a una consulta formulada por un sujeto obligado en materia de fiscalización:",
+    o:["Vincula jurídicamente a la UTF en procedimientos posteriores, generando cosa juzgada administrativa",
+       "Orienta al consultante sin agotar la facultad fiscalizadora ni eximir de responsabilidad si los hechos reales difieren",
+       "Obliga a todos los sujetos obligados por virtud del principio de igualdad, con efectos erga omnes"],
+    c:1,
+    ex:"Naturaleza orientadora: la respuesta no es cosa juzgada ni resolución. No vincula en procedimientos ulteriores sobre hechos reales distintos. No tiene efectos erga omnes automáticos, aunque los criterios relevantes se difunden con fines de certeza general." },
+
+  { sa:"4.2", sal:"Consultas en fiscalización", area:"Resoluciones y acuerdos", t:"dir",
+    q:"Respecto al momento idóneo para formular una consulta en materia de fiscalización:",
+    o:["Antes de realizar la conducta o la operación, para tener efecto orientador preventivo",
+       "Después de realizar la conducta, para confirmar que se actuó correctamente",
+       "Una vez concluido el ejercicio fiscal, al presentar el informe anual"],
+    c:0,
+    ex:"Carácter preventivo: la consulta orienta antes del hecho. Formulada a posteriori pierde eficacia: si la conducta ya se realizó, la consulta no subsana su eventual irregularidad ni impide la fiscalización. Esperar al informe anual es contrario al propósito del instrumento." },
+
+  { sa:"4.2", sal:"Consultas en fiscalización", area:"Resoluciones y acuerdos", t:"cas",
+    p:"Un partido formula una consulta sobre un supuesto hipotético abstracto, sin caso concreto, y solicita que la respuesta se publique como criterio general para todos los sujetos obligados.",
+    pt:"Caso práctico · Consulta abstracta y publicación",
+    q:"¿Cuál es la posición institucional adecuada?",
+    o:["Responder el supuesto abstracto con orientación general; la publicación como criterio general no es automática y se decide por los órganos facultados conforme a los procedimientos institucionales",
+       "Rechazar por improcedente toda consulta abstracta: sólo se responden casos concretos",
+       "Publicar automáticamente la respuesta en el portal del INE con carácter vinculante para todos los partidos"],
+    c:0,
+    ex:"Las consultas abstractas son admisibles y útiles para la certeza normativa. La publicación como criterio institucional no es automática ni la decide el consultante: requiere procedimiento interno y, en su caso, aprobación del órgano competente." },
+
+
+  /* ══════════════════════════════════
+     5.1  INFORMES  (2)
+  ══════════════════════════════════ */
+  { sa:"5.1", sal:"Informes", area:"Rendición de cuentas", t:"com",
+    q:"Complete: Una vez presentado el informe por el sujeto obligado, la UTF notifica un ________ con los hallazgos detectados, otorgando al sujeto un plazo para ________ o rectificar; posteriormente se elabora el proyecto de ________ y de resolución.",
+    o:["oficio de errores y omisiones · aclarar · dictamen consolidado",
+       "acta de inspección · ratificar · acuerdo de cumplimiento",
+       "requerimiento de información · desahogar pruebas · informe circunstanciado"],
+    c:0,
+    ex:"Secuencia técnica del RF: oficio de errores y omisiones → aclaración o rectificación → proyecto de dictamen consolidado. Las otras opciones mezclan figuras de otras materias (acta de inspección es otra cosa; informe circunstanciado corresponde a responsabilidades administrativas)." },
+
+  { sa:"5.1", sal:"Informes", area:"Rendición de cuentas", t:"dir",
+    q:"La presentación extemporánea de un informe de campaña por un partido político:",
+    o:["Se sanciona con multa proporcional a los días de retraso y puede agravarse por reincidencia",
+       "No se sanciona si el informe se presenta antes de que el Consejo General apruebe el dictamen consolidado",
+       "Sólo genera amonestación pública sin sanción pecuniaria, por tratarse de falta meramente formal"],
+    c:0,
+    ex:"La extemporaneidad es infracción autónoma: sanción proporcional (días de retraso) con posible agravante por reincidencia. Presentarlo antes del dictamen no borra la extemporaneidad (ya ocurrida). La amonestación pública sola es insuficiente; la jurisprudencia confirma la sanción pecuniaria." },
+
+
+  /* ══════════════════════════════════
+     5.2  INFRACCIONES  (2)
+  ══════════════════════════════════ */
+  { sa:"5.2", sal:"Infracciones", area:"Rendición de cuentas", t:"dir",
+    q:"La sanción a los partidos políticos por aportaciones de personas físicas o morales cuyos fondos tengan origen ilícito puede incluir, conforme al art. 41 CPEUM:",
+    o:["Exclusivamente multa del 100% del monto involucrado, sin otras consecuencias",
+       "Nulidad de la elección cuando la conducta sea determinante para el resultado, además de la sanción pecuniaria",
+       "Inhabilitación del responsable de finanzas por 10 años sin posibilidad de sanción adicional al partido"],
+    c:1,
+    ex:"La reforma 2014 elevó a rango constitucional la causal de nulidad por uso de recursos de origen ilícito cuando sean determinantes. La multa del 100% es exclusivamente administrativa. La inhabilitación personal del responsable no excluye la sanción al partido." },
+
+  { sa:"5.2", sal:"Infracciones", area:"Rendición de cuentas", t:"rel",
+    relTitle:"Relacione cada infracción con la sanción tipo más frecuentemente aplicada",
+    colA:{ title:"Infracción", items:[
+      "Aportación de fuente prohibida por $500,000",
+      "Rebase de tope de campaña inferior al 5%",
+      "Presentación extemporánea del informe anual por 5 días",
+      "Omisión reiterada y sistemática de reportar ingresos durante varios ejercicios"] },
+    colB:{ title:"Sanción tipo", items:[
+      "a) Multa del 100% al 200% del monto involucrado",
+      "b) Multa pecuniaria, sin causal de nulidad por no cumplir el umbral constitucional",
+      "c) Multa proporcional a los días de retraso, con posible agravante por reincidencia",
+      "d) Reducción significativa de ministraciones o, en casos extremos, cancelación del registro",
+      "e) Amonestación pública sin efectos patrimoniales"] },
+    q:"Seleccione la opción correcta:",
+    o:["1a, 2b, 3c, 4d",
+       "1b, 2a, 3e, 4c",
+       "1a, 2e, 3b, 4d"],
+    c:0,
+    ex:"(1) Fuente prohibida → 100-200% (a). (2) Rebase < 5% → multa sin nulidad (b). (3) Extemporaneidad → proporcional a días (c). (4) Omisión sistemática grave → reducción hasta cancelación (d). La amonestación pública es sanción menor, inapta para estas conductas." },
+
+  /* ══════════════════════════════════
+     NUEVAS V3 — 4.1  PROCEDIMIENTOS SANCIONADORES
+     (pruebas, requisitos de queja, sobreseimiento, sustanciación,
+      ampliación de investigación, remisión, resoluciones, sanciones)
+  ══════════════════════════════════ */
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"rel",
+    relTitle:"Relacione los tipos de prueba con las características que les corresponden según el RPSMF",
+    colA:{ title:"Tipo de prueba", items:[
+      "Pericial",
+      "Presuncional",
+      "Instrumental"] },
+    colB:{ title:"Característica", items:[
+      "a) Legal y humana",
+      "b) De actuaciones",
+      "c) No procede cuando el procedimiento esté vinculado al Proceso Electoral y sus resultados",
+      "d) Requiere autorización judicial previa"] },
+    q:"Seleccione la opción con las relaciones correctas:",
+    o:["1c, 2a, 3b",
+       "1a, 2b, 3c",
+       "1b, 2c, 3a"],
+    c:0,
+    ex:"Según el artículo 15 del RPSMF: la prueba pericial no procede cuando el procedimiento esté vinculado al Proceso Electoral y sus resultados (c); la presuncional es legal y humana (a); y la instrumental es de actuaciones (b). El inciso d) es distractor." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"¿Cuáles son los artículos que establecen los requisitos que debe cumplir el escrito de queja en el procedimiento sancionador en materia de fiscalización?",
+    o:["Los artículos 29 y 30",
+       "Los artículos 27 y 28",
+       "Los artículos 30 y 31"],
+    c:0,
+    ex:"Según el artículo 27 del RPSMF, el procedimiento de queja se iniciará a partir del escrito que presente cualquier interesado, siempre que cumpla con los requisitos establecidos en los artículos 29 y 30." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"seq",
+    q:"¿Cuál es la secuencia correcta de los requisitos del artículo 29 del RPSMF para presentar una queja ante el INE?\n1. Relacionar todas las pruebas ofrecidas con cada uno de los hechos narrados\n2. Nombre, firma autógrafa y/o electrónica o huella dactilar del denunciante\n3. Correo electrónico para recibir notificaciones\n4. Narración expresa y clara de los hechos en los que se basa la queja\n5. Aportar los elementos de prueba con los que cuente la persona denunciante\n6. Domicilio para oír y recibir notificaciones",
+    o:["2, 6, 3, 4, 5, 1",
+       "4, 2, 6, 3, 5, 1",
+       "2, 4, 6, 3, 1, 5"],
+    c:0,
+    ex:"Según el artículo 29 del RPSMF, los requisitos se presentan en el orden: I. Nombre y firma del denunciante (2), II. Domicilio para notificaciones (6), III. Correo electrónico (3), IV. Narración de los hechos (4), VI. Aportar elementos de prueba (5), y VIII. Relacionar las pruebas con los hechos narrados (1)." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"cas",
+    p:"La UTF recibe una queja el 15 de marzo de 2024 denunciando gastos no reportados por un partido político durante la campaña electoral de 2021. El quejoso presenta como única evidencia capturas de pantalla de publicaciones en redes sociales oficiales del candidato denunciado, las cuales ya fueron objeto de monitoreo por la Dirección de Auditoría en el procedimiento de revisión correspondiente. La queja fue presentada antes de la notificación del último oficio de errores y omisiones de dicho procedimiento.",
+    pt:"Caso práctico · Improcedencia de quejas",
+    q:"¿Cuál es la decisión institucional adecuada que debe adoptar la UTF?",
+    o:["Declarar improcedente la queja y reencauzarla al Dictamen del procedimiento de revisión correspondiente, por tratarse de publicaciones ya monitoreadas por la Dirección de Auditoría",
+       "Declarar improcedente la queja por extemporánea, ya que los hechos denunciados ocurrieron en 2021 y han transcurrido más de tres años",
+       "Admitir la queja a trámite dado que se presentó dentro del plazo legal y cuenta con elementos probatorios suficientes"],
+    c:0,
+    ex:"Conforme a la fracción IX del artículo citado, las quejas vinculadas a procesos electorales cuyo objeto sea denunciar presuntas erogaciones no reportadas que se pretendan acreditar exclusivamente con publicaciones en redes sociales ya monitoreadas por la Dirección de Auditoría, serán materia de análisis en el Dictamen del procedimiento de revisión respectivo, siempre que sean presentadas previo a la notificación del último oficio de errores y omisiones. El escrito de queja será reencauzado al Dictamen; no procede admisión independiente ni aplica la causal de extemporaneidad." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"cas",
+    p:"La UTF recibe una queja por presunto rebase de topes de gastos de campaña contra un candidato a diputado federal. Tras la revisión inicial, se determina que procede el desechamiento conforme al artículo 31 del Reglamento. Posteriormente, un ciudadano presenta una nueva queja contra el mismo candidato por los mismos hechos de rebase de topes, aportando documentación adicional.",
+    pt:"Caso práctico · Desechamiento de quejas",
+    q:"¿Cuál es la acción procesalmente correcta que debe realizar la UTF respecto a la nueva queja?",
+    o:["Admitir y revisar la nueva queja, ya que el desechamiento previo no prejuzga sobre el fondo del asunto",
+       "Rechazar de plano la nueva queja por tratarse de los mismos hechos ya desechados previamente",
+       "Solicitar al quejoso que demuestre que los hechos denunciados son sustancialmente diferentes a los ya desechados"],
+    c:0,
+    ex:"Conforme al párrafo 2 del artículo 31 del RPSMF, 'El desechamiento de una queja en ningún momento prejuzga sobre el fondo del asunto, por lo que la UTF podrá ejercer sus atribuciones legales cuando se presente una nueva queja respecto de los mismos hechos.' La UTF mantiene la facultad de conocer nuevas quejas sobre los mismos hechos previamente desechados, sin que el desechamiento anterior constituya un impedimento procesal." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"El procedimiento sancionador en materia de fiscalización podrá sobreseerse cuando el denunciado sea un partido o agrupación política que haya perdido su registro _______ y dicha determinación _______.",
+    o:["con posterioridad al inicio o admisión del procedimiento / haya causado estado",
+       "con anterioridad al inicio del procedimiento / sea firme e inatacable",
+       "durante la sustanciación del procedimiento / haya sido notificada"],
+    c:0,
+    ex:"De acuerdo con el artículo 32, fracción III del RPSMF, el procedimiento podrá sobreseerse cuando 'El denunciado sea un partido o agrupación política que haya perdido su registro con posterioridad al inicio o admisión del procedimiento y dicha determinación haya causado estado'." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"rel",
+    relTitle:"Relacione las causales de sobreseimiento con su descripción según el artículo 32 del RPSMF",
+    colA:{ title:"Causal", items:[
+      "Fallecimiento",
+      "Pérdida de registro",
+      "Improcedencia"] },
+    colB:{ title:"Descripción", items:[
+      "a) Se actualiza después de admitida la queja",
+      "b) Del partido o agrupación política con posterioridad al inicio del procedimiento",
+      "c) De la persona física señalada como probable responsable",
+      "d) Por falta de elementos probatorios suficientes"] },
+    q:"Seleccione la opción con las relaciones correctas:",
+    o:["1c, 2b, 3a",
+       "1a, 2b, 3c",
+       "1b, 2c, 3a"],
+    c:0,
+    ex:"Conforme al artículo 32 del RPSMF: el fallecimiento de la persona física señalada como probable responsable (1c); la pérdida de registro del partido o agrupación con posterioridad al inicio (2b); y cuando admitida la queja se actualice causal de improcedencia (3a). El inciso d) es distractor, no se menciona en el texto fuente." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"cas",
+    p:"La UTF recibe una queja contra un partido político por presunto rebase de topes de campaña. Durante la sustanciación, al analizar las pruebas aportadas, se detectan indicios de que el mismo partido realizó gastos no reportados en propaganda utilitaria, conducta diversa a la inicialmente denunciada. Además, se advierte la probable responsabilidad del coordinador de campaña, quien no fue señalado en la queja original.",
+    pt:"Caso práctico · Ampliación del objeto de investigación",
+    q:"¿Cuál es la acción procesalmente correcta que debe realizar la Unidad Técnica?",
+    o:["Ampliar el objeto de la investigación para incluir los gastos no reportados y la responsabilidad del coordinador, notificando a las partes y otorgando garantía de audiencia por cinco días naturales improrrogables",
+       "Concluir el procedimiento únicamente respecto a los hechos originalmente denunciados y sugerir al quejoso que presente una nueva denuncia por los gastos no reportados",
+       "Solicitar autorización al Consejo General para ampliar la investigación, notificando previamente a las partes sobre los nuevos elementos encontrados"],
+    c:0,
+    ex:"Conforme al artículo 41, inciso j del RPSMF, cuando durante la sustanciación se adviertan elementos sobre conductas diversas o la probable responsabilidad de sujetos distintos, la UTF podrá ampliar el objeto de la investigación. El inciso k establece que se debe notificar a las partes y dar garantía de audiencia durante un plazo improrrogable de cinco días naturales. Esta facultad es propia de la UTF y no requiere autorización adicional del Consejo General." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"¿Cuál es el procedimiento integral que debe seguir el órgano del Instituto que reciba una queja según el artículo 41 del RPSMF?",
+    o:["Remitir inmediatamente en medio magnético a la dirección electrónica determinada por la Unidad Técnica y enviar las constancias originales físicas dentro de 24 horas",
+       "Enviar únicamente las constancias originales en forma física a la Unidad Técnica dentro de las primeras 24 horas de recibida la queja",
+       "Remitir de forma inmediata tanto el medio magnético como las constancias físicas originales simultáneamente a la Unidad Técnica"],
+    c:0,
+    ex:"Según el artículo 41 del RPSMF, el órgano que reciba la queja debe cumplir con doble remisión: primero, remitir de forma inmediata en medio magnético a la dirección electrónica que determine la UTF; segundo, remitir las constancias originales en forma física dentro de 24 horas. La opción B omite la remisión inmediata en magnético; la opción C establece incorrectamente que ambas remisiones son simultáneas." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"cas",
+    p:"El Organismo Público Local Electoral de Michoacán dictó una vista dirigida al INE por presuntas irregularidades en el padrón electoral. El OPL envió la documentación completa a las 16:00 horas del viernes mediante mensajería especializada. La Unidad Técnica de Vinculación recibió físicamente las constancias el lunes siguiente a las 10:00 horas, porque el servicio de mensajería no opera fines de semana.",
+    pt:"Caso práctico · Sustanciación de quejas por OPL",
+    q:"¿Cuál es la decisión procesalmente correcta respecto al cumplimiento del plazo de remisión?",
+    o:["Tener por cumplido el plazo de remisión, ya que el OPL realizó el envío dentro de las 24 horas posteriores a ordenar la vista, siendo la recepción posterior una circunstancia ajena a su responsabilidad",
+       "Considerar que el OPL incumplió el plazo de 24 horas al no prever que el servicio de mensajería no opera fines de semana, por lo que debe requerirse justificación del retraso",
+       "Computar el plazo de 24 horas desde que la Unidad Técnica recibió físicamente los documentos el lunes, por lo que el envío se considera extemporáneo"],
+    c:0,
+    ex:"Conforme al artículo 41, fracción b del RPSMF, el plazo de 24 horas aplica para la remisión por parte del OPL, no para la recepción. El cumplimiento se computa desde que el OPL realiza materialmente el envío, siendo irrelevantes las circunstancias posteriores que retrasen la recepción física. No corresponde al OPL garantizar el funcionamiento del servicio de mensajería en fin de semana." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"cas",
+    p:"La UTF recibe una queja el 15 de marzo de 2024 contra un partido político por presuntos gastos no reportados en espectaculares, fundamentada exclusivamente en datos del Sistema Integral de Monitoreo de Espectaculares y Medios Impresos. La queja involucra un beneficio económico cuantificable de $450,000 pesos. El último oficio de errores y omisiones fue notificado al partido el 28 de febrero de 2024, y la resolución de informes aún no ha sido aprobada.",
+    pt:"Caso práctico · Sustanciación de quejas",
+    q:"¿Cuál es la decisión procesalmente correcta respecto al análisis y resolución de esta queja?",
+    o:["Determinar el análisis, valoración y resolución de las pretensiones de forma expresa en el Dictamen y Resolución del procedimiento de revisión de informes de ingresos y gastos correspondiente",
+       "Sustanciar inmediatamente la queja conforme al procedimiento ordinario, emitiendo la resolución antes de la aprobación del dictamen de informes",
+       "Diferir el análisis de la queja hasta después de la aprobación de la resolución de informes, suspendiendo temporalmente el procedimiento"],
+    c:0,
+    ex:"Conforme al artículo 41, inciso f del RPSMF, cuando la queja se fundamenta únicamente en datos del Sistema Integral de Monitoreo de Espectaculares y Medios Impresos, involucra un beneficio económico cuantificable, y es recibida con posterioridad a la notificación del último oficio de errores y omisiones (queja del 15 de marzo vs. notificación del 28 de febrero), el análisis debe integrarse expresamente en el Dictamen y Resolución del procedimiento de revisión respectivo, no mediante procedimiento independiente." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"cas",
+    p:"La Secretaría Ejecutiva del INE ha concluido la instrucción de un procedimiento administrativo sancionador iniciado por denuncia ciudadana contra un partido político por presuntas irregularidades en el manejo de recursos. El expediente SE/PSC/045/2024 está listo para resolución. El área jurídica debe verificar que la Resolución cumpla con todos los elementos formales requeridos antes de su emisión.",
+    pt:"Caso práctico · Elaboración de resoluciones",
+    q:"¿Cuál es la acción procesalmente correcta para garantizar el cumplimiento de los requisitos formales de la Resolución?",
+    o:["Incluir en el preámbulo los datos del expediente, denunciado y quejoso, el órgano emisor, lugar y fecha, asegurando la identificación completa de todos los elementos del procedimiento",
+       "Verificar que el preámbulo incluya únicamente los datos del expediente, el órgano emisor y la fecha de emisión, omitiendo referencias al denunciado por tratarse de información sensible",
+       "Incorporar en el preámbulo los datos del expediente y del denunciado, el órgano emisor y la fecha, excluyendo los datos del quejoso para proteger su identidad conforme a la normativa de transparencia"],
+    c:0,
+    ex:"Conforme al artículo 42, numeral 1, fracción I del RPSMF, el preámbulo de la Resolución debe contener: datos que identifiquen al expediente, al denunciado y en su caso al quejoso (o mención de haberse iniciado de oficio); el órgano emisor; y lugar y fecha. La opción B omite datos del denunciado; la opción C excluye indebidamente los datos del quejoso cuando sí aplica incluirlos." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"cas",
+    p:"Un partido político nacional no reportó gastos por $2,500,000 pesos durante el proceso electoral federal, ocultando deliberadamente facturas de propaganda radiofónica. El partido tiene antecedentes de infracciones menores en fiscalización hace tres años. La dirigencia argumenta dificultades económicas por reducción del financiamiento público. El Consejo General debe determinar la sanción aplicable tras acreditar la falta administrativa grave.",
+    pt:"Caso práctico · Individualización de sanciones",
+    q:"¿Cuál es la decisión institucional adecuada para la individualización de la sanción?",
+    o:["Evaluar integralmente todas las circunstancias: el dolo en la ocultación, el monto involucrado, la reincidencia, las condiciones socioeconómicas, y la necesidad de suprimir prácticas infractoras para determinar la sanción proporcional",
+       "Aplicar únicamente el criterio de reincidencia y el monto del daño económico, imponiendo la sanción máxima prevista en la Ley General por tratarse de una falta grave repetitiva",
+       "Considerar exclusivamente las condiciones socioeconómicas del partido y la reducción de su financiamiento para aplicar una sanción mínima que no comprometa su operación institucional"],
+    c:0,
+    ex:"Conforme al artículo 43 del RPSMF, la autoridad debe considerar todos los elementos: la gravedad y conveniencia de suprimir prácticas infractoras (fracción I), el dolo (fracción II), las condiciones socioeconómicas (fracción IV), la reincidencia (fracción VI), y el monto del perjuicio (fracción VII). La opción B limita el análisis a solo dos criterios; la opción C privilegia únicamente las condiciones económicas omitiendo agravantes esenciales como el dolo y la reincidencia." },
+
+  { sa:"4.1", sal:"Procedimientos sancionadores", area:"Resoluciones y acuerdos", t:"dir",
+    q:"¿Cuál es el criterio que debe considerar prioritariamente la autoridad electoral para determinar la proporcionalidad de una sanción cuando convergen múltiples factores agravantes relacionados con prácticas sistemáticas que vulneran el sistema democrático?",
+    o:["La gravedad de la responsabilidad y la conveniencia de suprimir prácticas que infrinjan las leyes electorales, en atención al bien jurídico tutelado",
+       "La reincidencia en el incumplimiento de obligaciones y el monto del beneficio o perjuicio derivado de la infracción",
+       "Las condiciones socioeconómicas del infractor y las circunstancias externas de ejecución de la falta"],
+    c:0,
+    ex:"Según el artículo 43, fracción I del RPSMF, el primer criterio es 'La gravedad de la responsabilidad en que se incurra y la conveniencia de suprimir prácticas que infrinjan en cualquier forma las leyes electorales, en atención al bien jurídico tutelado'. Este criterio tiene prioridad conceptual por enfocarse en la protección del bien jurídico democrático y la finalidad preventiva general. La reincidencia y el beneficio económico (B) son complementarios pero no prioritarios; las condiciones socioeconómicas (C) tampoco constituyen el eje central ante prácticas sistemáticas lesivas." }
+
+];
+
+/* ═══════════════════════════════════════════════════
+   ALEATORIZACIÓN
+═══════════════════════════════════════════════════ */
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function shuffleOptions(q) {
+  const indices = [0, 1, 2];
+  const shuffled = shuffleArray(indices);
+  return { ...q, o: shuffled.map(i => q.o[i]), c: shuffled.indexOf(q.c) };
+}
+const SUBS = ["1.1","2.1","2.2","2.3","2.4","2.5","2.6","3.1","3.2","3.3","3.4","4.1","4.2","5.1","5.2"];
+const shuffledQ = SUBS.flatMap(sub =>
+  shuffleArray(Q.filter(q => q.sa === sub)).map(q => shuffleOptions(q))
+);
+Q.length = 0;
+shuffledQ.forEach(q => Q.push(q));
+
+const TIME_LIMIT = 68 * 60;
+let answers, revealed, current, timerInterval, secondsLeft;
+
+const SS = {
+  "1.1":{bg:"#e8eaf6",color:"#1a237e",icon:"🏛️"},
+  "2.1":{bg:"#e3f2fd",color:"#0d47a1",icon:"🎗️"},
+  "2.2":{bg:"#e0f2f1",color:"#004d40",icon:"🧑‍⚖️"},
+  "2.3":{bg:"#f3e5f5",color:"#4a148c",icon:"🤝"},
+  "2.4":{bg:"#fff3e0",color:"#e65100",icon:"👥"},
+  "2.5":{bg:"#e0f7fa",color:"#006064",icon:"👁️"},
+  "2.6":{bg:"#fce4ec",color:"#880e4f",icon:"⚖️"},
+  "3.1":{bg:"#e8f5e9",color:"#1b5e20",icon:"💰"},
+  "3.2":{bg:"#fff8e1",color:"#f57f17",icon:"💵"},
+  "3.3":{bg:"#ede7f6",color:"#311b92",icon:"🗳️"},
+  "3.4":{bg:"#f1f8e9",color:"#33691e",icon:"📅"},
+  "4.1":{bg:"#ffebee",color:"#b71c1c",icon:"⚖️"},
+  "4.2":{bg:"#e1f5fe",color:"#01579b",icon:"❓"},
+  "5.1":{bg:"#fce4ec",color:"#880e4f",icon:"📋"},
+  "5.2":{bg:"#efebe9",color:"#3e2723",icon:"🚫"}
+};
+
+const TYPE_LABELS = {
+  "dir":{ cls:"dir", label:"🟢 DIRECTO" },
+  "cas":{ cls:"cas", label:"🟠 CASO" },
+  "seq":{ cls:"seq", label:"🔵 SECUENCIA" },
+  "rel":{ cls:"rel", label:"🟣 RELACIÓN" },
+  "com":{ cls:"com", label:"🟤 COMPLETAMIENTO" }
+};
+
+function startExam() {
+  answers  = new Array(Q.length).fill(null);
+  revealed = new Array(Q.length).fill(false);
+  current  = 0;
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('examScreen').classList.remove('hidden');
+  document.getElementById('navBar').classList.remove('hidden');
+  renderQuestion(0);
+  startTimer();
+}
+
+function renderQuestion(idx) {
+  current = idx;
+  const q = Q[idx], sc = SS[q.sa] || {bg:"#fce4ec",color:"#880e4f",icon:"📌"};
+  const isR = revealed[idx], sel = answers[idx];
+
+  let ph = '';
+  if (q.p) ph = `<div class="passage"><div class="passage-label">📄 ${q.pt}</div>${q.p.replace(/\n/g,'<br>')}</div>`;
+
+  let listadoHTML = '';
+  if (q.t === 'seq' && q.listado) {
+    const items = q.listado.map((it, i) => `<li><strong>${i+1}.</strong> ${it}</li>`).join('');
+    listadoHTML = `<div class="listado">
+      <div class="listado-title">📋 ${q.listadoTitle || 'Elementos a ordenar'}</div>
+      <ul style="list-style:none;padding-left:0">${items}</ul>
+    </div>`;
+  }
+
+  let relHTML = '';
+  if (q.t === 'rel' && q.colA && q.colB) {
+    const aItems = q.colA.items.map((it, i) => `<li><strong>${i+1}.</strong> ${it}</li>`).join('');
+    const bItems = q.colB.items.map(it => `<li>${it}</li>`).join('');
+    relHTML = `<div class="listado">
+      <div class="listado-title">🔗 ${q.relTitle || 'Relacione las columnas'}</div>
+      <div class="rel-cols">
+        <div class="rel-col">
+          <div class="rel-col-title">${q.colA.title}</div>
+          <ul style="list-style:none;padding-left:0">${aItems}</ul>
+        </div>
+        <div class="rel-col">
+          <div class="rel-col-title">${q.colB.title}</div>
+          <ul>${bItems}</ul>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const L = ['A','B','C'];
+  const opts = q.o.map((o, i) => {
+    let cls = 'option', icon = '';
+    if (isR) {
+      cls += ' disabled';
+      if (i === q.c) { cls += ' correct'; icon = '<span class="opt-icon">✅</span>'; }
+      else if (i === sel && i !== q.c) { cls += ' incorrect'; icon = '<span class="opt-icon">❌</span>'; }
+    } else if (i === sel) cls += ' selected';
+    return `<div class="${cls}" onclick="selOpt(${idx},${i})">
+      <div class="option-letter">${L[i]}</div>
+      <div class="opt-text">${o}</div>${icon}
+    </div>`;
+  }).join('');
+
+  const ri = isR && sel !== null && sel !== q.c
+    ? ['A','B','C'][sel] + ' era incorrecta'
+    : '';
+
+  const typeInfo = TYPE_LABELS[q.t] || TYPE_LABELS["dir"];
+  const typeBadge = `<span class="q-type ${typeInfo.cls}">${typeInfo.label}</span>`;
+
+  document.getElementById('examScreen').innerHTML = `
+    <div class="question-card">
+      <div class="q-meta">
+        <span class="q-badge" style="background:${sc.bg};color:${sc.color}">${sc.icon} ${q.sal}</span>
+        <div class="q-right">${typeBadge}<span class="q-num">${idx+1}/${Q.length}</span></div>
+      </div>
+      ${ph}
+      ${listadoHTML}
+      ${relHTML}
+      <div class="question-text">${q.q}</div>
+      <div class="options">${opts}</div>
+      <div class="explanation ${isR ? 'show' : ''}"><strong>${ri}${ri ? ' — ' : ''}Explicación:</strong> ${q.ex}</div>
+    </div>
+    ${!isR && answers[idx] !== null
+      ? `<div class="ver-sol-wrap"><button class="btn-ver-sol" onclick="rev(${idx})">Ver explicación 💡</button></div>`
+      : ''}
+  `;
+
+  document.getElementById('progressBar').style.width = ((idx+1)/Q.length*100) + '%';
+  document.getElementById('navCurrent').textContent = idx + 1;
+  document.getElementById('navTotal').textContent   = Q.length;
+  document.getElementById('btnPrev').disabled = idx === 0;
+  document.getElementById('btnNext').textContent = idx === Q.length-1 ? '🏁 Finalizar' : 'Sig. →';
+  window.scrollTo({top: 0, behavior: 'instant'});
+}
+
+function selOpt(qi, oi) { if (revealed[qi]) return; answers[qi] = oi; renderQuestion(qi); }
+function rev(idx) { revealed[idx] = true; renderQuestion(idx); }
+function nextQ() { if (current < Q.length-1) renderQuestion(current+1); else showResults(); }
+function prevQ() { if (current > 0) renderQuestion(current-1); }
+
+function startTimer() {
+  secondsLeft = TIME_LIMIT;
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m = Math.floor(secondsLeft/60).toString().padStart(2,'0');
+    const s = (secondsLeft%60).toString().padStart(2,'0');
+    const el = document.getElementById('timer');
+    el.textContent = `${m}:${s}`;
+    el.className = 'timer' + (secondsLeft < 300 ? ' danger' : secondsLeft < 600 ? ' warning' : '');
+    if (secondsLeft <= 0) { clearInterval(timerInterval); showResults(); }
+  }, 1000);
+}
+
+function showResults() {
+  clearInterval(timerInterval);
+  document.getElementById('examScreen').classList.add('hidden');
+  document.getElementById('navBar').classList.add('hidden');
+
+  const total    = Q.length;
+  const answered = answers.filter(a => a !== null).length;
+  const correct  = answers.filter((a, i) => a === Q[i].c).length;
+  const wrong    = answered - correct;
+  const skipped  = total - answered;
+  const pct      = Math.round(correct / total * 100);
+
+  const areas = {};
+  Q.forEach((q, i) => {
+    if (!areas[q.area]) areas[q.area] = {total:0, correct:0};
+    areas[q.area].total++;
+    if (answers[i] === q.c) areas[q.area].correct++;
+  });
+
+  const subs = {};
+  Q.forEach((q, i) => {
+    if (!subs[q.sa]) subs[q.sa] = {label:q.sal, total:0, correct:0};
+    subs[q.sa].total++;
+    if (answers[i] === q.c) subs[q.sa].correct++;
+  });
+
+  const types = {};
+  Q.forEach((q, i) => {
+    const t = q.t || "dir";
+    if (!types[t]) types[t] = {total:0, correct:0};
+    types[t].total++;
+    if (answers[i] === q.c) types[t].correct++;
+  });
+
+  const weak = Object.entries(subs).filter(([,s]) => s.correct/s.total < 0.6).map(([,s]) => s.label);
+  const cc   = pct >= 70 ? 'score-good' : pct >= 50 ? 'score-mid' : 'score-low';
+  const msg  = pct >= 80 ? '¡Excelente! Dominas los procedimientos sancionadores en materia de fiscalización.'
+             : pct >= 60 ? 'Buen nivel. Refuerza los temas marcados.'
+             : 'Diagnóstico listo. Estudia los temas señalados antes del examen.';
+
+  const areaColors = {
+    "Autoridades en fiscalización": "#1a237e",
+    "Sujetos obligados":            "#0d47a1",
+    "Origen y aplicación":          "#33691e",
+    "Resoluciones y acuerdos":      "#b71c1c",
+    "Rendición de cuentas":         "#880e4f"
+  };
+
+  const rows = Object.entries(areas).map(([name, a]) => {
+    const p    = Math.round(a.correct / a.total * 100);
+    const icon = p >= 80 ? '✅' : p >= 60 ? '⚠️' : '❌';
+    const bc   = p >= 60
+      ? `linear-gradient(90deg,${areaColors[name]||'#880e4f'},#e91e8c)`
+      : 'linear-gradient(90deg,#c62828,#ef5350)';
+    return `<div class="area-row">
+      <div class="area-name">${icon} ${name}</div>
+      <div class="area-bar-wrap"><div class="area-bar" style="width:${p}%;background:${bc}"></div></div>
+      <div class="area-pct" style="color:${p>=60?'#880e4f':'#c62828'}">${p}%</div>
+    </div>`;
+  }).join('');
+
+  const typeLabelsMap = {"dir":"🟢 Directo","cas":"🟠 Caso","seq":"🔵 Secuencia","rel":"🟣 Relación","com":"🟤 Completam."};
+  const typeRows = Object.entries(types).map(([t, a]) => {
+    const p = Math.round(a.correct / a.total * 100);
+    const bc = p >= 60
+      ? 'linear-gradient(90deg,#880e4f,#e91e8c)'
+      : 'linear-gradient(90deg,#c62828,#ef5350)';
+    return `<div class="area-row">
+      <div class="area-name">${typeLabelsMap[t]} (${a.correct}/${a.total})</div>
+      <div class="area-bar-wrap"><div class="area-bar" style="width:${p}%;background:${bc}"></div></div>
+      <div class="area-pct" style="color:${p>=60?'#880e4f':'#c62828'}">${p}%</div>
+    </div>`;
+  }).join('');
+
+  const wb = weak.length
+    ? `<div class="weak-banner"><h4>🎯 Estudia esto primero:</h4><p>Menos del 60% en estas subáreas. Son clave para el cargo.</p><div class="weak-tags">${weak.map(t=>`<span class="weak-tag">📌 ${t}</span>`).join('')}</div></div>`
+    : `<div style="background:#fce4ec;border-radius:10px;padding:13px;margin:13px 0;color:#880e4f;font-weight:600">✅ ¡Dominas todas las áreas!</div>`;
+
+  const tu = TIME_LIMIT - secondsLeft;
+  const tm = Math.floor(tu/60), ts = tu%60;
+
+  document.getElementById('resultsScreen').innerHTML = `
+    <div class="results-screen">
+      <div style="background:#fce4ec;border-radius:10px;padding:9px 14px;margin-bottom:16px;font-size:.8rem;color:#880e4f;font-weight:600">
+        ⚖️ DIAGNÓSTICO · SUBDIRECCIÓN RESOLUCIONES Y NORMATIVIDAD — ${new Date().toLocaleDateString('es-MX')}
+      </div>
+      <div class="score-circle ${cc}">${pct}%<div class="score-sub">${correct}/${total}</div></div>
+      <h2 style="margin-bottom:7px">${msg}</h2>
+      <p style="margin-bottom:18px;color:#777;font-size:.83rem">Tiempo: ${tm}m ${ts}s · Respondidas: ${answered}/${total}</p>
+      <div class="stats-grid">
+        <div class="stat-card stat-correct"><div class="n">${correct}</div><div class="l">✅ Correctas</div></div>
+        <div class="stat-card stat-wrong"><div class="n">${wrong}</div><div class="l">❌ Incorrectas</div></div>
+        <div class="stat-card stat-skip"><div class="n">${skipped}</div><div class="l">⏭️ Saltadas</div></div>
+      </div>
+      ${wb}
+      <div style="text-align:left;margin-bottom:22px">
+        <h3 style="font-size:.87rem;font-weight:700;color:#444;margin-bottom:9px">Desempeño por área</h3>
+        ${rows}
+      </div>
+      <div style="text-align:left;margin-bottom:22px">
+        <h3 style="font-size:.87rem;font-weight:700;color:#444;margin-bottom:9px">Desempeño por tipo de reactivo</h3>
+        ${typeRows}
+      </div>
+      <div style="display:flex;gap:9px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary btn-lg" onclick="reviewExam()">Revisar con explicaciones</button>
+        <button class="btn btn-secondary btn-lg" onclick="location.reload()">🔀 Nuevo diagnóstico</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('resultsScreen').classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+function reviewExam() {
+  document.getElementById('resultsScreen').classList.add('hidden');
+  document.getElementById('examScreen').classList.remove('hidden');
+  document.getElementById('navBar').classList.remove('hidden');
+  revealed = revealed.map(() => true);
+  renderQuestion(0);
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
